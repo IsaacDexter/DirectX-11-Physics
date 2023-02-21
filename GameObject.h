@@ -3,8 +3,9 @@
 #include <directxmath.h>
 #include <d3d11_4.h>
 #include <string>
-#include "Structures.h"
 #include "Vector3.h"
+
+#include "Structures.h"
 #include "Transform.h"
 #include "Appearance.h"
 
@@ -17,18 +18,18 @@ public:
 	GameObject(string type, Appearance* appearance, Transform* transform);
 	~GameObject();
 
-	string GetType() const { return _type; }
+	Appearance* GetAppearance() const { return _appearance; }
+	Transform* GetTransform() const { return _transform; }
 
-	Appearance* GetAppearance() const { return _pAppearance; }
-	Transform* GetTransform() const { return _pTransform; }
+	string GetType() const { return _type; }
 
 	void Update(float t);
 	void Draw(ID3D11DeviceContext * pImmediateContext);
 
 private:
+	Transform* _transform;
+	Appearance* _appearance;
+	
 	string _type;
-
-	Appearance* _pAppearance;
-	Transform* _pTransform;
 };
 

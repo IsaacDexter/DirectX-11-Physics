@@ -1,16 +1,16 @@
 #include "GameObject.h"
 
-GameObject::GameObject(string type, Appearance* appearance, Transform* transform) : _type(type), _pAppearance(appearance), _pTransform(transform)
+GameObject::GameObject(string type, Appearance* appearance, Transform* transform) : _type(type), _appearance(appearance), _transform(transform)
 {
 	
 }
 
 GameObject::~GameObject()
 {
-	delete _pTransform;
-	_pTransform = nullptr;
-	delete _pAppearance;
-	_pAppearance = nullptr;
+	delete _transform;
+	_transform = nullptr;
+	delete _appearance;
+	_appearance = nullptr;
 }
 
 void GameObject::Update(float t)
