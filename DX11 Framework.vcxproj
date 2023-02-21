@@ -376,6 +376,7 @@
     <ClCompile Include="Loaders\OBJLoader.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -385,6 +386,7 @@
     <ClInclude Include="Loaders\OBJLoader.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="Structures.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="Vector3.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>

@@ -3,9 +3,6 @@
 GameObject::GameObject(string type, Geometry geometry, Material material) : _geometry(geometry), _type(type), _material(material)
 {
 	_parent = nullptr;
-	_position = Vector3();
-	_rotation = Vector3();
-	_scale = Vector3(1.0f, 1.0f, 1.0f);
 
 	_textureRV = nullptr;
 }

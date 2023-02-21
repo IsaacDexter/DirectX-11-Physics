@@ -28,6 +28,7 @@
       <Filter>Loaders</Filter>
     </ClInclude>
     <ClInclude Include="Vector3.h" />
+    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -40,6 +41,7 @@
     <ClCompile Include="Loaders\OBJLoader.cpp">
       <Filter>Loaders</Filter>
     </ClCompile>
+    <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
