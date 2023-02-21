@@ -29,6 +29,7 @@
     </ClInclude>
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Appearance.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -42,6 +43,7 @@
       <Filter>Loaders</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Appearance.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

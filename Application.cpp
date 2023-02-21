@@ -163,29 +163,29 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	noSpecMaterial.specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	noSpecMaterial.specularPower = 0.0f;
 
-	GameObject* gameObject = new GameObject("Floor", planeGeometry, noSpecMaterial, new Transform);
+	GameObject* gameObject = new GameObject("Floor", new Appearance(planeGeometry, noSpecMaterial), new Transform);
 	gameObject->GetTransform()->SetPosition(0.0f, 0.0f, 0.0f);
 	gameObject->GetTransform()->SetScale(15.0f, 15.0f, 15.0f);
 	gameObject->GetTransform()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
-	gameObject->SetTextureRV(_pGroundTextureRV);
+	gameObject->GetAppearance()->SetTextureRV(_pGroundTextureRV);
 
 	_gameObjects.push_back(gameObject);
 
 	for (auto i = 0; i < NUMBEROFCUBES; i++)
 	{
-		gameObject = new GameObject("Cube " + to_string(i), cubeGeometry, shinyMaterial, new Transform);
+		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), new Transform);
 		gameObject->GetTransform()->SetPosition(-3.0f + (i * 2.5f), 1.0f, 10.0f);
 		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 
-		gameObject->SetTextureRV(_pTextureRV);
+		gameObject->GetAppearance()->SetTextureRV(_pTextureRV);
 
 		_gameObjects.push_back(gameObject);
 	}
 
-	gameObject = new GameObject("Donut", donutGeometry, shinyMaterial, new Transform);
+	gameObject = new GameObject("Donut", new Appearance(donutGeometry, shinyMaterial), new Transform);
 	gameObject->GetTransform()->SetPosition(-6.0f, 0.5f, 10.0f);
 	gameObject->GetTransform()->SetScale(0.5f, 0.5f, 0.5f);
-	gameObject->SetTextureRV(_pTextureRV);
+	gameObject->GetAppearance()->SetTextureRV(_pTextureRV);
 	_gameObjects.push_back(gameObject);
 
 	return S_OK;
@@ -777,7 +777,7 @@ void Application::Draw()
 	for (auto gameObject : _gameObjects)
 	{
 		// Get render material
-		Material material = gameObject->GetMaterial();
+		Material material = gameObject->GetAppearance()->GetMaterial();
 
 		// Copy material to shader
 		cb.surface.AmbientMtrl = material.ambient;
@@ -788,9 +788,9 @@ void Application::Draw()
 		cb.World = XMMatrixTranspose(gameObject->GetTransform()->GetWorldMatrix());
 
 		// Set texture
-		if (gameObject->HasTexture())
+		if (gameObject->GetAppearance()->HasTexture())
 		{
-			ID3D11ShaderResourceView * textureRV = gameObject->GetTextureRV();
+			ID3D11ShaderResourceView * textureRV = gameObject->GetAppearance()->GetTextureRV();
 			_pImmediateContext->PSSetShaderResources(0, 1, &textureRV);
 			cb.HasTexture = 1.0f;
 		}
