@@ -785,7 +785,7 @@ void Application::Draw()
 		cb.surface.SpecularMtrl = material.specular;
 
 		// Set world matrix
-		cb.World = XMMatrixTranspose(gameObject->GetWorldMatrix());
+		cb.World = XMMatrixTranspose(gameObject->GetTransform()->GetWorldMatrix());
 
 		// Set texture
 		if (gameObject->HasTexture())

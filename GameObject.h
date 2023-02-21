@@ -24,13 +24,9 @@ public:
 
 	Transform* GetTransform() const { return _pTransform; }
 
-	XMMATRIX GetWorldMatrix() const { return XMLoadFloat4x4(&_world); }
-
 	void SetTextureRV(ID3D11ShaderResourceView * textureRV) { _textureRV = textureRV; }
 	ID3D11ShaderResourceView * GetTextureRV() const { return _textureRV; }
 	bool HasTexture() const { return _textureRV ? true : false; }
-
-	void SetParent(GameObject * parent) { _parent = parent; }
 
 	void Update(float t);
 	void Draw(ID3D11DeviceContext * pImmediateContext);
@@ -38,14 +34,10 @@ public:
 private:
 	string _type;
 
-	XMFLOAT4X4 _world;
-
 	Geometry _geometry;
 	Material _material;
-	Transform* _pTransform;
-
 	ID3D11ShaderResourceView * _textureRV;
 
-	GameObject * _parent;
+	Transform* _pTransform;
 };
 
