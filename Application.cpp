@@ -682,9 +682,37 @@ void Application::moveForward(int objectNumber)
 
 void Application::moveBackward(int objectNumber)
 {
-	Vector3 position = _gameObjects[objectNumber-2]->GetTransform()->GetPosition();
+	Vector3 position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
 	position.z += 0.02f;
-	_gameObjects[objectNumber-2]->GetTransform()->SetPosition(position);
+	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+}
+
+void Application::moveUp(int objectNumber)
+{
+	Vector3 position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
+	position.y += 0.02f;
+	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+}
+
+void Application::moveDown(int objectNumber)
+{
+	Vector3 position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
+	position.y -= 0.02f;
+	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+}
+
+void Application::moveLeft(int objectNumber)
+{
+	Vector3 position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
+	position.x += 0.02f;
+	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+}
+
+void Application::moveRight(int objectNumber)
+{
+	Vector3 position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
+	position.x -= 0.02f;
+	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
 }
 
 void Application::Update()
@@ -711,11 +739,43 @@ void Application::Update()
 	}
 	if (GetAsyncKeyState('3'))
 	{
-		moveBackward(3);
+		moveBackward(1);
 	}
 	if (GetAsyncKeyState('4'))
 	{
-		moveBackward(4);
+		moveBackward(2);
+	}
+	if (GetAsyncKeyState('5'))
+	{
+		moveUp(1);
+	}
+	if (GetAsyncKeyState('6'))
+	{
+		moveUp(2);
+	}
+	if (GetAsyncKeyState('7'))
+	{
+		moveDown(1);
+	}
+	if (GetAsyncKeyState('8'))
+	{
+		moveDown(2);
+	}
+	if (GetAsyncKeyState('9'))
+	{
+		moveLeft(1);
+	}
+	if (GetAsyncKeyState('0'))
+	{
+		moveLeft(2);
+	}
+	if (GetAsyncKeyState('O'))
+	{
+		moveRight(1);
+	}
+	if (GetAsyncKeyState('P'))
+	{
+		moveRight(2);
 	}
 	// Update camera
 	float angleAroundZ = XMConvertToRadians(_cameraOrbitAngleXZ);
