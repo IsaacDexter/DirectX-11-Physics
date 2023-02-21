@@ -13,7 +13,7 @@ using namespace std;
 class GameObject
 {
 public:
-	GameObject(string type, Geometry geometry, Material material);
+	GameObject(string type, Geometry geometry, Material material, Transform* transform);
 	~GameObject();
 
 	string GetType() const { return _type; }
@@ -21,6 +21,8 @@ public:
 	Geometry GetGeometryData() const { return _geometry; }
 
 	Material GetMaterial() const { return _material; }
+
+	Transform* GetTransform() const { return _pTransform; }
 
 	XMMATRIX GetWorldMatrix() const { return XMLoadFloat4x4(&_world); }
 
@@ -40,6 +42,7 @@ private:
 
 	Geometry _geometry;
 	Material _material;
+	Transform* _pTransform;
 
 	ID3D11ShaderResourceView * _textureRV;
 
