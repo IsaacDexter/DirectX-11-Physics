@@ -11,6 +11,8 @@ GameObject::~GameObject()
 {
 	_textureRV = nullptr;
 	_parent = nullptr;
+	delete _pTransform;
+	_pTransform = nullptr;
 }
 
 void GameObject::Update(float t)
