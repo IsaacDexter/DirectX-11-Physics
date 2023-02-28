@@ -13,6 +13,7 @@
 #include "Structures.h"
 #include "GameObject.h"
 #include "Vector3.h"
+#include "Timer.h"
 
 using namespace DirectX;
 
@@ -46,6 +47,8 @@ private:
 	ID3D11ShaderResourceView * _pGroundTextureRV = nullptr;
 
 	ID3D11SamplerState * _pSamplerLinear = nullptr;
+
+	Timer* _timer;
 
 	MeshData objMeshData;
 
@@ -81,6 +84,9 @@ private:
 	HRESULT InitShadersAndInputLayout();
 	HRESULT InitVertexBuffer();
 	HRESULT InitIndexBuffer();
+
+	void UpdateWorld(float dt);
+	void HandleInput();
 
 	void moveForward(int objectNumber);
 	void moveBackward(int objectNumber);

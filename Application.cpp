@@ -1,6 +1,8 @@
 #include "Application.h"
 
 #define NUMBEROFCUBES 2
+///<summary>The amount of time each frame to be 60 FPS.</summary>
+#define FPS60 1.0f/60.0f
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -71,6 +73,7 @@ Application::Application()
 	_pVertexBuffer = nullptr;
 	_pIndexBuffer = nullptr;
 	_pConstantBuffer = nullptr;
+	_timer = nullptr;
 	CCWcullMode=nullptr;
 	CWcullMode= nullptr;
 	DSLessEqual = nullptr;
@@ -106,6 +109,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         return E_FAIL;
     }
 
+	//initialise timer
+	_timer = new Timer();
 	
 	hr = CreateDDSTextureFromFile(_pd3dDevice, L"Assets\\Textures\\stone.dds", nullptr, &_pTextureRV);
 	hr = CreateDDSTextureFromFile(_pd3dDevice, L"Assets\\Textures\\floor.dds", nullptr, &_pGroundTextureRV);
@@ -718,16 +723,44 @@ void Application::moveRight(int objectNumber)
 void Application::Update()
 {
     // Update our time
-    static float timeSinceStart = 0.0f;
-    static DWORD dwTimeStart = 0;
+	float accumulator = _timer->GetDeltaTime();
+	string deltaTime = to_string(accumulator);
 
-    DWORD dwTimeCur = GetTickCount64();
+	while (accumulator >= FPS60)
+	{
+		OutputDebugStringA((deltaTime + "\n").c_str());
+		HandleInput();
+		UpdateWorld(FPS60);
+		accumulator -= FPS60;
+	_timer->Tick();
+	}
 
-    if (dwTimeStart == 0)
-        dwTimeStart = dwTimeCur;
+}
 
-	timeSinceStart = (dwTimeCur - dwTimeStart) / 1000.0f;
+void Application::UpdateWorld(float dt)
+{
+	// Update camera
+	float angleAroundZ = XMConvertToRadians(_cameraOrbitAngleXZ);
 
+	float x = _cameraOrbitRadius * cos(angleAroundZ);
+	float z = _cameraOrbitRadius * sin(angleAroundZ);
+
+	XMFLOAT3 cameraPos = _camera->GetPosition();
+	cameraPos.x = x;
+	cameraPos.z = z;
+
+	_camera->SetPosition(cameraPos);
+	_camera->Update();
+
+	// Update objects
+	for (auto gameObject : _gameObjects)
+	{
+		gameObject->Update(dt);
+	}
+}
+
+void Application::HandleInput()
+{
 	// Move gameobject
 	if (GetAsyncKeyState('1'))
 	{
@@ -776,24 +809,6 @@ void Application::Update()
 	if (GetAsyncKeyState('P'))
 	{
 		moveRight(2);
-	}
-	// Update camera
-	float angleAroundZ = XMConvertToRadians(_cameraOrbitAngleXZ);
-
-	float x = _cameraOrbitRadius * cos(angleAroundZ);
-	float z = _cameraOrbitRadius * sin(angleAroundZ);
-
-	XMFLOAT3 cameraPos = _camera->GetPosition();
-	cameraPos.x = x;
-	cameraPos.z = z;
-
-	_camera->SetPosition(cameraPos);
-	_camera->Update();
-
-	// Update objects
-	for (auto gameObject : _gameObjects)
-	{
-		gameObject->Update(timeSinceStart);
 	}
 }
 
