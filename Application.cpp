@@ -728,7 +728,7 @@ void Application::Update()
 
 	while (accumulator >= FPS60)
 	{
-		OutputDebugStringA((deltaTime + "\n").c_str());
+		DebugPrintF("deltaTime is %f \n the number is %i \n", accumulator, 2);
 		HandleInput();
 		UpdateWorld(FPS60);
 		accumulator -= FPS60;

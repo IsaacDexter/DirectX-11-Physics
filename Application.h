@@ -14,6 +14,7 @@
 #include "GameObject.h"
 #include "Vector3.h"
 #include "Timer.h"
+#include "Debug.h"
 
 using namespace DirectX;
 
