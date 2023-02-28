@@ -9,7 +9,7 @@
 #include "Loaders\DDSTextureLoader.h"
 #include "Loaders\OBJLoader.h"
 #include "resource.h"
-#include "Camera.h"
+#include "OrbitingCamera.h"
 #include "Structures.h"
 #include "GameObject.h"
 #include "Vector3.h"
@@ -21,48 +21,66 @@ using namespace DirectX;
 class Application
 {
 private:
+#pragma region ID3D11
+	/// <summary>Handle to an instance, i.e. the currently running instance of the program.</summary>
 	HINSTANCE               _hInst;
+	/// <summary>Handle to a window, i.e. the window the current instance is running in</summary>
 	HWND                    _hWnd;
+	/// <summary>Whether to use which type of drivers to use.
+	/// <para>See https://learn.microsoft.com/en-us/windows/win32/api/d3dcommon/ne-d3dcommon-d3d_driver_type for each type.</para>
+	/// <para>Used when calling D3D11CreateDevice.</para></summary>
 	D3D_DRIVER_TYPE         _driverType;
+	/// <summary>Describes the set of features targeted by a Direct3D device.</summary>
 	D3D_FEATURE_LEVEL       _featureLevel;
+	/// <summary>Used for creating resources, such as the many shaders in the pipeline.</summary>
 	ID3D11Device*           _pd3dDevice;
+	/// <summary>Used for binding ID3D11Device's resouces to the pipleline.</summary>
 	ID3D11DeviceContext*    _pImmediateContext;
+	/// <summary>An interface that implements one or more surfaces for storing rendered data before presenting it to an output.</summary>
 	IDXGISwapChain*         _pSwapChain;
+	/// <summary>This variable is a pointer to an object that holds all the information about the render target, i.e. the back buffer</summary>
 	ID3D11RenderTargetView* _pRenderTargetView;
+	/// <summary>Manages the executable program that controls vertex-shader stage of the pipeline.</summary>
 	ID3D11VertexShader*     _pVertexShader;
+	/// <summary>Manages the executable program that controls pixel-shader stage of the pipeline.</summary>
 	ID3D11PixelShader*      _pPixelShader;
+	/// <summary>Holds a definition of how to feed vertex data that is laid out in memory into the input-assembler stage of the graphics pipeline.</summary>
 	ID3D11InputLayout*      _pVertexLayout;
 
-	ID3D11Buffer*           _pVertexBuffer;
-	ID3D11Buffer*           _pIndexBuffer;
-
-	ID3D11Buffer*           _pPlaneVertexBuffer;
-	ID3D11Buffer*           _pPlaneIndexBuffer;
-
+	/// <summary>Acts as a way of passing constants to the GPU.</summary>
 	ID3D11Buffer*           _pConstantBuffer;
 
+	/// <summary>Accesses a texture during depth-stencil testing (stencil buffer/z buffer).</summary>
 	ID3D11DepthStencilView* _depthStencilView = nullptr;
+	/// <summary>The texture the depth stencil view accesses.</summary>
 	ID3D11Texture2D* _depthStencilBuffer = nullptr;
 
-	ID3D11ShaderResourceView * _pTextureRV = nullptr;
-	ID3D11ShaderResourceView * _pGroundTextureRV = nullptr;
-
+	/// <summary>Specifies how textures are sampled. In this case, linear sampling is used.</summary>
 	ID3D11SamplerState * _pSamplerLinear = nullptr;
+#pragma endregion
 
-	Timer* _timer;
+	/// <summary>A pointer to the Timer class, which is used to limit frames per second.</summary>
+	Timer* m_timer;
 
-	MeshData objMeshData;
+	/// <summary>A resource view specifies the subresouces a shader can access during rendering. 
+	/// <para>In this calse, it allows access to a texture as a shader resource.</para>
+	/// <para>This one stores the stone texture that appears on the cubes.</para></summary>
+	ID3D11ShaderResourceView* m_stoneTextureRV = nullptr;
+	/// <summary>Stores the texture of the tiled ground.</summary>
+	ID3D11ShaderResourceView* m_groundTextureRV = nullptr;
 
-	Light basicLight;
+	/// <summary>Stores the vertex and index buffers etc. of the donut object.</summary>
+	MeshData m_donutMeshData;
+	MeshData m_cubeMeshData;
+	MeshData m_planeMeshData;
 
-	vector<GameObject *> _gameObjects;
+	/// <summary>Stores the ambient diffuse and specular component of the scene's directional light.</summary>
+	Light m_directionalLight;
 
-	Camera * _camera = nullptr;
-	float _cameraOrbitRadius = 7.0f;
-	float _cameraOrbitRadiusMin = 2.0f;
-	float _cameraOrbitRadiusMax = 50.0f;
-	float _cameraOrbitAngleXZ = -90.0f;
-	float _cameraSpeed = 2.0f;
+	/// <summary>A vector containing a collection of each of the game objects within the scene.</summary>
+	vector<GameObject *> m_gameObjects;
+
+	OrbitingCamera* m_camera = nullptr;
 
 	UINT _WindowHeight;
 	UINT _WindowWidth;
@@ -80,6 +98,7 @@ private:
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
+	HRESULT InitWorld();
 	void Cleanup();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT InitShadersAndInputLayout();

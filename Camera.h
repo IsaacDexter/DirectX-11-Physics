@@ -9,7 +9,7 @@ using namespace DirectX;
 
 class Camera
 {
-private:
+protected:
 	XMFLOAT3 _eye; 
 	XMFLOAT3 _at;
 	XMFLOAT3 _up;
@@ -26,7 +26,7 @@ public:
 	Camera(XMFLOAT3 position, XMFLOAT3 at, XMFLOAT3 up, FLOAT windowWidth, FLOAT windowHeight, FLOAT nearDepth, FLOAT farDepth);
 	~Camera();
 
-	void Update();
+	virtual void Update(float dt);
 
 	XMFLOAT4X4 GetView() const { return _view; }
 	XMFLOAT4X4 GetProjection() const { return _projection; }

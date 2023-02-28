@@ -29,27 +29,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 bool Application::HandleKeyboard(MSG msg)
 {
-	XMFLOAT3 cameraPosition = _camera->GetPosition();
+	XMFLOAT3 cameraPosition = m_camera->GetPosition();
 
 	switch (msg.wParam)
 	{
 	case VK_UP:
-		_cameraOrbitRadius = max(_cameraOrbitRadiusMin, _cameraOrbitRadius - (_cameraSpeed * 0.2f));
+		m_camera->ZoomIn();
 		return true;
 		break;
 
 	case VK_DOWN:
-		_cameraOrbitRadius = min(_cameraOrbitRadiusMax, _cameraOrbitRadius + (_cameraSpeed * 0.2f));
+		m_camera->ZoomOut();
 		return true;
 		break;
 
 	case VK_RIGHT:
-		_cameraOrbitAngleXZ -= _cameraSpeed;
+		m_camera->OrbitRight();
 		return true;
 		break;
 
 	case VK_LEFT:
-		_cameraOrbitAngleXZ += _cameraSpeed;
+		m_camera->OrbitLeft();
 		return true;
 		break;
 	}
@@ -70,10 +70,8 @@ Application::Application()
 	_pVertexShader = nullptr;
 	_pPixelShader = nullptr;
 	_pVertexLayout = nullptr;
-	_pVertexBuffer = nullptr;
-	_pIndexBuffer = nullptr;
 	_pConstantBuffer = nullptr;
-	_timer = nullptr;
+	m_timer = nullptr;
 	CCWcullMode=nullptr;
 	CWcullMode= nullptr;
 	DSLessEqual = nullptr;
@@ -110,51 +108,59 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     }
 
 	//initialise timer
-	_timer = new Timer();
+	m_timer = new Timer();
 	
-	hr = CreateDDSTextureFromFile(_pd3dDevice, L"Assets\\Textures\\stone.dds", nullptr, &_pTextureRV);
-	hr = CreateDDSTextureFromFile(_pd3dDevice, L"Assets\\Textures\\floor.dds", nullptr, &_pGroundTextureRV);
+	//initialise Textures
+	hr = CreateDDSTextureFromFile(_pd3dDevice, L"Assets\\Textures\\stone.dds", nullptr, &m_stoneTextureRV);
+	hr = CreateDDSTextureFromFile(_pd3dDevice, L"Assets\\Textures\\floor.dds", nullptr, &m_groundTextureRV);
 	
 	if (FAILED(hr))
 	{
 		return E_FAIL;
 	}
 
-    // Setup Camera
+	InitWorld();
+
+	return S_OK;
+}
+
+HRESULT Application::InitWorld()
+{
+	// Setup Camera
 	XMFLOAT3 eye = XMFLOAT3(0.0f, 2.0f, -1.0f);
 	XMFLOAT3 at = XMFLOAT3(0.0f, 2.0f, 0.0f);
 	XMFLOAT3 up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
-	_camera = new Camera(eye, at, up, (float)_renderWidth, (float)_renderHeight, 0.01f, 200.0f);
+	m_camera = new OrbitingCamera(eye, at, up, (float)_renderWidth, (float)_renderHeight, 0.01f, 200.0f);
 
 	// Setup the scene's light
-	basicLight.AmbientLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	basicLight.DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	basicLight.SpecularLight = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-	basicLight.SpecularPower = 20.0f;
-	basicLight.LightVecW = XMFLOAT3(0.0f, 1.0f, -1.0f);
+	m_directionalLight.AmbientLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_directionalLight.DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_directionalLight.SpecularLight = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+	m_directionalLight.SpecularPower = 20.0f;
+	m_directionalLight.LightVecW = XMFLOAT3(0.0f, 1.0f, -1.0f);
 
 	Geometry donutGeometry;
-	objMeshData = OBJLoader::Load("Assets/3DModels/donut.obj", _pd3dDevice);
-	donutGeometry.indexBuffer = objMeshData.IndexBuffer;
-	donutGeometry.numberOfIndices = objMeshData.IndexCount;
-	donutGeometry.vertexBuffer = objMeshData.VertexBuffer;
-	donutGeometry.vertexBufferOffset = objMeshData.VBOffset;
-	donutGeometry.vertexBufferStride = objMeshData.VBStride;
-	
+	m_donutMeshData = OBJLoader::Load("Assets/3DModels/donut.obj", _pd3dDevice);
+	donutGeometry.indexBuffer = m_donutMeshData.IndexBuffer;
+	donutGeometry.numberOfIndices = m_donutMeshData.IndexCount;
+	donutGeometry.vertexBuffer = m_donutMeshData.VertexBuffer;
+	donutGeometry.vertexBufferOffset = m_donutMeshData.VBOffset;
+	donutGeometry.vertexBufferStride = m_donutMeshData.VBStride;
+
 	Geometry cubeGeometry;
-	cubeGeometry.indexBuffer = _pIndexBuffer;
-	cubeGeometry.vertexBuffer = _pVertexBuffer;
-	cubeGeometry.numberOfIndices = 36;
-	cubeGeometry.vertexBufferOffset = 0;
-	cubeGeometry.vertexBufferStride = sizeof(SimpleVertex);
+	cubeGeometry.indexBuffer = m_cubeMeshData.IndexBuffer;
+	cubeGeometry.numberOfIndices = m_cubeMeshData.IndexCount = 36;
+	cubeGeometry.vertexBuffer = m_cubeMeshData.VertexBuffer;
+	cubeGeometry.vertexBufferOffset = m_cubeMeshData.VBOffset = 0;
+	cubeGeometry.vertexBufferStride = m_cubeMeshData.VBStride = sizeof(SimpleVertex);
 
 	Geometry planeGeometry;
-	planeGeometry.indexBuffer = _pPlaneIndexBuffer;
-	planeGeometry.vertexBuffer = _pPlaneVertexBuffer;
-	planeGeometry.numberOfIndices = 6;
-	planeGeometry.vertexBufferOffset = 0;
-	planeGeometry.vertexBufferStride = sizeof(SimpleVertex);
+	planeGeometry.indexBuffer = m_planeMeshData.IndexBuffer;
+	planeGeometry.numberOfIndices = m_planeMeshData.IndexCount = 6;
+	planeGeometry.vertexBuffer = m_planeMeshData.VertexBuffer;
+	planeGeometry.vertexBufferOffset = m_planeMeshData.VBOffset = 0;
+	planeGeometry.vertexBufferStride = m_planeMeshData.VBStride = sizeof(SimpleVertex);
 
 	Material shinyMaterial;
 	shinyMaterial.ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
@@ -172,9 +178,9 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	gameObject->GetTransform()->SetPosition(0.0f, 0.0f, 0.0f);
 	gameObject->GetTransform()->SetScale(15.0f, 15.0f, 15.0f);
 	gameObject->GetTransform()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
-	gameObject->GetAppearance()->SetTextureRV(_pGroundTextureRV);
+	gameObject->GetAppearance()->SetTextureRV(m_groundTextureRV);
 
-	_gameObjects.push_back(gameObject);
+	m_gameObjects.push_back(gameObject);
 
 	for (auto i = 0; i < NUMBEROFCUBES; i++)
 	{
@@ -182,19 +188,21 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 		gameObject->GetTransform()->SetPosition(-3.0f + (i * 2.5f), 1.0f, 10.0f);
 		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 
-		gameObject->GetAppearance()->SetTextureRV(_pTextureRV);
+		gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
 
-		_gameObjects.push_back(gameObject);
+		m_gameObjects.push_back(gameObject);
 	}
 
 	gameObject = new GameObject("Donut", new Appearance(donutGeometry, shinyMaterial), new Transform);
 	gameObject->GetTransform()->SetPosition(-6.0f, 0.5f, 10.0f);
 	gameObject->GetTransform()->SetScale(0.5f, 0.5f, 0.5f);
-	gameObject->GetAppearance()->SetTextureRV(_pTextureRV);
-	_gameObjects.push_back(gameObject);
+	gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
+	m_gameObjects.push_back(gameObject);
 
 	return S_OK;
 }
+
+#pragma region D3D11
 
 HRESULT Application::InitShadersAndInputLayout()
 {
@@ -322,7 +330,7 @@ HRESULT Application::InitVertexBuffer()
 	ZeroMemory(&InitData, sizeof(InitData));
     InitData.pSysMem = vertices;
 
-    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
+    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &m_cubeMeshData.VertexBuffer);
 
     if (FAILED(hr))
         return hr;
@@ -345,7 +353,7 @@ HRESULT Application::InitVertexBuffer()
 	ZeroMemory(&InitData, sizeof(InitData));
 	InitData.pSysMem = planeVertices;
 
-	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pPlaneVertexBuffer);
+	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &m_planeMeshData.VertexBuffer);
 
 	if (FAILED(hr))
 		return hr;
@@ -390,7 +398,7 @@ HRESULT Application::InitIndexBuffer()
 	D3D11_SUBRESOURCE_DATA InitData;
 	ZeroMemory(&InitData, sizeof(InitData));
     InitData.pSysMem = indices;
-    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
+    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &m_cubeMeshData.IndexBuffer);
 
     if (FAILED(hr))
         return hr;
@@ -410,7 +418,7 @@ HRESULT Application::InitIndexBuffer()
 
 	ZeroMemory(&InitData, sizeof(InitData));
 	InitData.pSysMem = planeIndices;
-	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pPlaneIndexBuffer);
+	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &m_planeMeshData.IndexBuffer);
 
 	if (FAILED(hr))
 		return hr;
@@ -637,16 +645,11 @@ void Application::Cleanup()
     if (_pImmediateContext) _pImmediateContext->ClearState();
 	if (_pSamplerLinear) _pSamplerLinear->Release();
 
-	if (_pTextureRV) _pTextureRV->Release();
+	if (m_stoneTextureRV) m_stoneTextureRV->Release();
 
-	if (_pGroundTextureRV) _pGroundTextureRV->Release();
+	if (m_groundTextureRV) m_groundTextureRV->Release();
 
     if (_pConstantBuffer) _pConstantBuffer->Release();
-
-    if (_pVertexBuffer) _pVertexBuffer->Release();
-    if (_pIndexBuffer) _pIndexBuffer->Release();
-	if (_pPlaneVertexBuffer) _pPlaneVertexBuffer->Release();
-	if (_pPlaneIndexBuffer) _pPlaneIndexBuffer->Release();
 
     if (_pVertexLayout) _pVertexLayout->Release();
     if (_pVertexShader) _pVertexShader->Release();
@@ -664,12 +667,12 @@ void Application::Cleanup()
 	if (CCWcullMode) CCWcullMode->Release();
 	if (CWcullMode) CWcullMode->Release();
 
-	if (_camera)
+	if (m_camera)
 	{
-		delete _camera;
+		delete m_camera;
 	}
 
-	for (auto gameObject : _gameObjects)
+	for (auto gameObject : m_gameObjects)
 	{
 		if (gameObject)
 		{
@@ -678,52 +681,59 @@ void Application::Cleanup()
 	}
 }
 
+#pragma endregion
+
+
+#pragma region MovingCubes
+
 void Application::moveForward(int objectNumber)
 {
-	Vector3 position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
+	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
 	position.z -= 0.02f;
-	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
 }
 
 void Application::moveBackward(int objectNumber)
 {
-	Vector3 position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
+	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
 	position.z += 0.02f;
-	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
 }
 
 void Application::moveUp(int objectNumber)
 {
-	Vector3 position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
+	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
 	position.y += 0.02f;
-	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
 }
 
 void Application::moveDown(int objectNumber)
 {
-	Vector3 position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
+	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
 	position.y -= 0.02f;
-	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
 }
 
 void Application::moveLeft(int objectNumber)
 {
-	Vector3 position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
+	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
 	position.x += 0.02f;
-	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
 }
 
 void Application::moveRight(int objectNumber)
 {
-	Vector3 position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
+	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
 	position.x -= 0.02f;
-	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
 }
+
+#pragma endregion
 
 void Application::Update()
 {
     // Update our time
-	float accumulator = _timer->GetDeltaTime();
+	float accumulator = m_timer->GetDeltaTime();
 	string deltaTime = to_string(accumulator);
 
 	while (accumulator >= FPS60)
@@ -732,7 +742,7 @@ void Application::Update()
 		HandleInput();
 		UpdateWorld(FPS60);
 		accumulator -= FPS60;
-	_timer->Tick();
+	m_timer->Tick();
 	}
 
 }
@@ -740,20 +750,20 @@ void Application::Update()
 void Application::UpdateWorld(float dt)
 {
 	// Update camera
-	float angleAroundZ = XMConvertToRadians(_cameraOrbitAngleXZ);
+	float angleAroundZ = XMConvertToRadians(m_camera->GetAngleXZ());
 
-	float x = _cameraOrbitRadius * cos(angleAroundZ);
-	float z = _cameraOrbitRadius * sin(angleAroundZ);
+	float x = m_camera->GetRadius() * cos(angleAroundZ);
+	float z = m_camera->GetRadius() * sin(angleAroundZ);
 
-	XMFLOAT3 cameraPos = _camera->GetPosition();
+	XMFLOAT3 cameraPos = m_camera->GetPosition();
 	cameraPos.x = x;
 	cameraPos.z = z;
 
-	_camera->SetPosition(cameraPos);
-	_camera->Update();
+	m_camera->SetPosition(cameraPos);
+	m_camera->Update(dt);
 
 	// Update objects
-	for (auto gameObject : _gameObjects)
+	for (auto gameObject : m_gameObjects)
 	{
 		gameObject->Update(dt);
 	}
@@ -836,8 +846,8 @@ void Application::Draw()
 
     ConstantBuffer cb;
 
-	XMFLOAT4X4 viewAsFloats = _camera->GetView();
-	XMFLOAT4X4 projectionAsFloats = _camera->GetProjection();
+	XMFLOAT4X4 viewAsFloats = m_camera->GetView();
+	XMFLOAT4X4 projectionAsFloats = m_camera->GetProjection();
 
 	XMMATRIX view = XMLoadFloat4x4(&viewAsFloats);
 	XMMATRIX projection = XMLoadFloat4x4(&projectionAsFloats);
@@ -845,11 +855,11 @@ void Application::Draw()
 	cb.View = XMMatrixTranspose(view);
 	cb.Projection = XMMatrixTranspose(projection);
 	
-	cb.light = basicLight;
-	cb.EyePosW = _camera->GetPosition();
+	cb.light = m_directionalLight;
+	cb.EyePosW = m_camera->GetPosition();
 
 	// Render all scene objects
-	for (auto gameObject : _gameObjects)
+	for (auto gameObject : m_gameObjects)
 	{
 		// Get render material
 		Material material = gameObject->GetAppearance()->GetMaterial();

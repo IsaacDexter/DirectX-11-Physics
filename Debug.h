@@ -5,7 +5,7 @@
 #include <stdio.h>		//needed for vsnprintf
 
 /// <summary>This function builds a const char * that is formatted using string formatting symbols, these symbols are populated via the variable arguments list passed into the function Variadic arguments MSDN
-/// <para>Variadic functions have an indefinite amount of arguments</summary>
+/// <para>Variadic functions have an indefinite amount of arguments.</para></summary>
 /// <param name="format"></param>
 /// <param name="args"></param>
 /// <returns></returns>

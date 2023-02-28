@@ -1,11 +1,11 @@
 #include "Appearance.h"
 
-Appearance::Appearance(Geometry geometry, Material material) : _geometry(geometry), _material(material)
+Appearance::Appearance(Geometry geometry, Material material) : m_geometry(geometry), m_material(material)
 {
-	_textureRV = nullptr;
+	m_textureResourceView = nullptr;
 }
 
 Appearance::~Appearance()
 {
-	_textureRV = nullptr;
+	m_textureResourceView = nullptr;
 }

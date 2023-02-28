@@ -7,17 +7,17 @@ public:
 	Appearance(Geometry geometry, Material material);
 	~Appearance();
 
-	Geometry GetGeometryData() const { return _geometry; }
+	Geometry GetGeometryData() const { return m_geometry; }
 
-	Material GetMaterial() const { return _material; }
+	Material GetMaterial() const { return m_material; }
 
-	void SetTextureRV(ID3D11ShaderResourceView* textureRV) { _textureRV = textureRV; }
-	ID3D11ShaderResourceView* GetTextureRV() const { return _textureRV; }
-	bool HasTexture() const { return _textureRV ? true : false; }
+	void SetTextureRV(ID3D11ShaderResourceView* textureResourceView) { m_textureResourceView = textureResourceView; }
+	ID3D11ShaderResourceView* GetTextureRV() const { return m_textureResourceView; }
+	bool HasTexture() const { return m_textureResourceView ? true : false; }
 
 private:
-	Geometry _geometry;
-	Material _material;
-	ID3D11ShaderResourceView* _textureRV;
+	Geometry m_geometry;
+	Material m_material;
+	ID3D11ShaderResourceView* m_textureResourceView;
 };
 

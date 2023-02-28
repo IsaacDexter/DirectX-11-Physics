@@ -14,37 +14,38 @@ public:
 	~Transform();
 
 	// Setters and Getters for position/rotation/scale
-	void SetPosition(Vector3 position) { _position = position; }
-	void SetPosition(float x, float y, float z) { _position.x = x; _position.y = y; _position.z = z; }
+	void SetPosition(Vector3 position) { position = position; }
+	void SetPosition(float x, float y, float z) { m_position.x = x; m_position.y = y; m_position.z = z; }
 
-	Vector3 GetPosition() const { return _position; }
-	XMMATRIX GetTranslationMatrix() const { return XMMatrixTranslation(_position.x, _position.y, _position.z); }
+	Vector3 GetPosition() const { return m_position; }
+	XMMATRIX GetTranslationMatrix() const { return XMMatrixTranslation(m_position.x, m_position.y, m_position.z); }
 
-	void SetScale(Vector3 scale) { _scale = scale; }
-	void SetScale(float x, float y, float z) { _scale.x = x; _scale.y = y; _scale.z = z; }
+	void SetScale(Vector3 scale) { scale = scale; }
+	void SetScale(float x, float y, float z) { m_scale.x = x; m_scale.y = y; m_scale.z = z; }
 
-	Vector3 GetScale() const { return _scale; }
-	XMMATRIX GetScaleMatrix() const { return XMMatrixScaling(_scale.x, _scale.y, _scale.z); }
+	Vector3 GetScale() const { return m_scale; }
+	XMMATRIX GetScaleMatrix() const { return XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z); }
 
-	void SetRotation(Vector3 rotation) { _rotation = rotation; }
-	void SetRotation(float x, float y, float z) { _rotation.x = x; _rotation.y = y; _rotation.z = z; }
+	void SetRotation(Vector3 rotation) { rotation = rotation; }
+	void SetRotation(float x, float y, float z) { m_rotation.x = x; m_rotation.y = y; m_rotation.z = z; }
 
-	Vector3 GetRotation() const { return _rotation; }
-	XMMATRIX GetRotationMatrix() const { return XMMatrixRotationX(_rotation.x) * XMMatrixRotationY(_rotation.y) * XMMatrixRotationZ(_rotation.z); }
+	Vector3 GetRotation() const { return m_rotation; }
+	XMMATRIX GetRotationMatrix() const { return XMMatrixRotationX(m_rotation.x) * XMMatrixRotationY(m_rotation.y) * XMMatrixRotationZ(m_rotation.z); }
 
 	void CalculateWorldMatrix();
 
-	XMMATRIX GetWorldMatrix() const { return XMLoadFloat4x4(&_world); }
+	XMMATRIX GetWorldMatrix() const { return XMLoadFloat4x4(&m_world); }
 
-	void SetParent(GameObject* parent) { _parent = parent; }
+	void SetParent(GameObject* parent) { parent = parent; }
 
 private:
-	Vector3 _position;
-	Vector3 _rotation;
-	Vector3 _scale;
+	/// <summary>The objects position relative to it's</summary>
+	Vector3 m_position;
+	Vector3 m_rotation;
+	Vector3 m_scale;
 
-	XMFLOAT4X4 _world;
+	XMFLOAT4X4 m_world;
 
-	GameObject* _parent;
+	GameObject* m_parent;
 };
 

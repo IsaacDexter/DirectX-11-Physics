@@ -3,14 +3,14 @@
 Camera::Camera(XMFLOAT3 position, XMFLOAT3 at, XMFLOAT3 up, FLOAT windowWidth, FLOAT windowHeight, FLOAT nearDepth, FLOAT farDepth)
 	: _eye(position), _at(at), _up(up), _windowWidth(windowWidth), _windowHeight(windowHeight), _nearDepth(nearDepth), _farDepth(farDepth)
 {
-	Update();
+	Update(0.0f);
 }
 
 Camera::~Camera()
 {
 }
 
-void Camera::Update()
+void Camera::Update(float dt)
 {
     // Initialize the view matrix
 

@@ -18,18 +18,18 @@ public:
 	GameObject(string type, Appearance* appearance, Transform* transform);
 	~GameObject();
 
-	Appearance* GetAppearance() const { return _appearance; }
-	Transform* GetTransform() const { return _transform; }
+	Appearance* GetAppearance() const { return m_appearance; }
+	Transform* GetTransform() const { return m_transform; }
 
-	string GetType() const { return _type; }
+	string GetType() const { return m_type; }
 
 	void Update(float t);
 	void Draw(ID3D11DeviceContext * pImmediateContext);
 
 private:
-	Transform* _transform;
-	Appearance* _appearance;
+	Transform* m_transform;
+	Appearance* m_appearance;
 	
-	string _type;
+	string m_type;
 };
 

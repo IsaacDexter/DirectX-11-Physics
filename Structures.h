@@ -19,10 +19,16 @@ struct SimpleVertex
 
 struct MeshData
 {
+	/// <summary>A memory buffer that contains vertex data that can be rendered in the render pipleline.</summary>
 	ID3D11Buffer* VertexBuffer;
+	/// <summary>Used alongside the vertex buffer to structure them into the various shapes and primitives.
+	/// <para>If vertex buffer holds the points in space, the index buffer stores how those points can be organised into shapes.</para></summary>
 	ID3D11Buffer* IndexBuffer;
+	/// <summary>Referes to the spacing in the buffer. Should be set to the size of each of the vertices.</summary>
 	UINT VBStride;
+	/// <summary>How much to offset the vertex buffer by.</summary>
 	UINT VBOffset;
+	/// <summary>The number of indices in the index buffer.</summary>
 	UINT IndexCount;
 };
 

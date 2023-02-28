@@ -4,16 +4,16 @@
 
 Transform::Transform()
 {
-	_position = Vector3();
-	_rotation = Vector3();
-	_scale = Vector3(1.0f, 1.0f, 1.0f);
+	m_position = Vector3();
+	m_rotation = Vector3();
+	m_scale = Vector3(1.0f, 1.0f, 1.0f);
 
-	_parent = nullptr;
+	m_parent = nullptr;
 }
 
 Transform::~Transform()
 {
-	_parent = nullptr;
+	m_parent = nullptr;
 }
 
 void Transform::CalculateWorldMatrix()
@@ -23,10 +23,10 @@ void Transform::CalculateWorldMatrix()
 	XMMATRIX rotation = GetRotationMatrix();
 	XMMATRIX translation = GetTranslationMatrix();
 
-	XMStoreFloat4x4(&_world, scale * rotation * translation);
+	XMStoreFloat4x4(&m_world, scale * rotation * translation);
 
-	if (_parent != nullptr)
+	if (m_parent != nullptr)
 	{
-		XMStoreFloat4x4(&_world, this->GetWorldMatrix() * _parent->GetTransform()->GetWorldMatrix());
+		XMStoreFloat4x4(&m_world, this->GetWorldMatrix() * m_parent->GetTransform()->GetWorldMatrix());
 	}
 }
