@@ -8,6 +8,7 @@
 #include "Structures.h"
 #include "Transform.h"
 #include "Appearance.h"
+#include "PhysicsModel.h"
 
 using namespace DirectX;
 using namespace std;
@@ -20,6 +21,7 @@ public:
 
 	Appearance* GetAppearance() const { return m_appearance; }
 	Transform* GetTransform() const { return m_transform; }
+	PhysicsModel* GetPhysicsModel() const { return m_physicsModel; }
 
 	string GetType() const { return m_type; }
 
@@ -29,6 +31,7 @@ public:
 private:
 	Transform* m_transform;
 	Appearance* m_appearance;
+	PhysicsModel* m_physicsModel;
 	
 	string m_type;
 };

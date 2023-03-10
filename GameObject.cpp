@@ -2,7 +2,7 @@
 
 GameObject::GameObject(string type, Appearance* appearance, Transform* transform) : m_type(type), m_appearance(appearance), m_transform(transform)
 {
-	
+	m_physicsModel = new PhysicsModel(m_transform);
 }
 
 GameObject::~GameObject()
@@ -11,10 +11,13 @@ GameObject::~GameObject()
 	m_transform = nullptr;
 	delete m_appearance;
 	m_appearance = nullptr;
+	delete m_physicsModel;
+	m_physicsModel = nullptr;
 }
 
-void GameObject::Update(float t)
+void GameObject::Update(float dt)
 {
+	GetPhysicsModel()->Update(dt);
 	GetTransform()->CalculateWorldMatrix();
 }
 

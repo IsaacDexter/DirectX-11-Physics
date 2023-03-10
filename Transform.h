@@ -14,7 +14,7 @@ public:
 	~Transform();
 
 	// Setters and Getters for position/rotation/scale
-	void SetPosition(Vector3 position) { position = position; }
+	void SetPosition(Vector3 position) { m_position = position; }
 	void SetPosition(float x, float y, float z) { m_position.x = x; m_position.y = y; m_position.z = z; }
 
 	Vector3 GetPosition() const { return m_position; }

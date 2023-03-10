@@ -688,44 +688,38 @@ void Application::Cleanup()
 
 void Application::moveForward(int objectNumber)
 {
-	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
-	position.z -= 0.02f;
-	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(0, 0, -1);
+	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(0, 0, -1);
 }
 
 void Application::moveBackward(int objectNumber)
 {
-	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
-	position.z += 0.02f;
-	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(0, 0, 1);
+	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(0, 0, 1);
 }
 
 void Application::moveUp(int objectNumber)
 {
-	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
-	position.y += 0.02f;
-	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(0, 1, 0);
+	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(0, 1, 0);
 }
 
 void Application::moveDown(int objectNumber)
 {
-	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
-	position.y -= 0.02f;
-	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(0, -1, 0);
+	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(0, -1, 0);
 }
 
 void Application::moveLeft(int objectNumber)
 {
-	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
-	position.x += 0.02f;
-	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(1, 0, 0);
+	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(1, 0, 0);
 }
 
 void Application::moveRight(int objectNumber)
 {
-	Vector3 position = m_gameObjects[objectNumber]->GetTransform()->GetPosition();
-	position.x -= 0.02f;
-	m_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(-1, 0, 0);
+	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(-1, 0, 0);
 }
 
 #pragma endregion
