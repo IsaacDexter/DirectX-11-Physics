@@ -7,6 +7,8 @@ ParticleModel::ParticleModel(Transform* transform, float mass = 1.0f):PhysicsMod
 
 void ParticleModel::Update(float dt)
 {
+	ApplyGravity();
+
 	CalculateAcceleration();
 	CalculateVelocity(dt);
 	CalculateDisplacement(dt);

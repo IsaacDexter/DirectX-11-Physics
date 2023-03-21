@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_OBJECT_H
+#define GAME_OBJECT_H
 
 #include <directxmath.h>
 #include <d3d11_4.h>
@@ -36,3 +37,4 @@ private:
 	string m_type;
 };
 
+#endif // !GAME_OBJECT_H

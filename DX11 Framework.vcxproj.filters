@@ -15,6 +15,9 @@
     <Filter Include="Loaders">
       <UniqueIdentifier>{42eda990-9bba-4565-b080-1e7db2da4d10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PhysicsModels">
+      <UniqueIdentifier>{ee8a8210-8e41-4d00-93d3-c0a8f0f8a10e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -32,9 +35,19 @@
     <ClInclude Include="Appearance.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Debug.h" />
-    <ClInclude Include="PhysicsModel.h" />
     <ClInclude Include="OrbitingCamera.h" />
-    <ClInclude Include="ParticleModel.h" />
+    <ClInclude Include="ParticleModel.h">
+      <Filter>PhysicsModels</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsModel.h">
+      <Filter>PhysicsModels</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantVelocityModel.h">
+      <Filter>PhysicsModels</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantAccelerationModel.h">
+      <Filter>PhysicsModels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -50,9 +63,19 @@
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Appearance.cpp" />
     <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="PhysicsModel.cpp" />
     <ClCompile Include="OrbitingCamera.cpp" />
-    <ClCompile Include="ParticleModel.cpp" />
+    <ClCompile Include="ParticleModel.cpp">
+      <Filter>PhysicsModels</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsModel.cpp">
+      <Filter>PhysicsModels</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantVelocityModel.cpp">
+      <Filter>PhysicsModels</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantAccelerationModel.cpp">
+      <Filter>PhysicsModels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

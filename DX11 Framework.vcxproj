@@ -374,6 +374,8 @@
     <ClCompile Include="Appearance.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ConstantAccelerationModel.cpp" />
+    <ClCompile Include="ConstantVelocityModel.cpp" />
     <ClCompile Include="Loaders\DDSTextureLoader.cpp" />
     <ClCompile Include="Loaders\OBJLoader.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -388,6 +390,8 @@
     <ClInclude Include="Appearance.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ConstantAccelerationModel.h" />
+    <ClInclude Include="ConstantVelocityModel.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Loaders\DDSTextureLoader.h" />

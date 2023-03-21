@@ -4,13 +4,19 @@ PhysicsModel::PhysicsModel(Transform* transform, float mass = 1.0f)
 {
 	m_transform = transform;
 	m_mass = mass;
+	CalculateWeight();
 }
 
 void PhysicsModel::Update(float dt)
 {
+	//Apply forces; calculate acc; calculate vel and dis; update position; clear acc and forces
+
+	ApplyGravity();
+
 	CalculateAcceleration();
 	CalculateVelocity(dt);
 	CalculateDisplacement(dt);
+
 
 	ClearForceAndAcceleration();
 }
@@ -36,4 +42,17 @@ void PhysicsModel::ClearForceAndAcceleration()
 {
 	m_netforce = Vector3();	//Reset force after movement as it is recalculated every frame
 	m_acceleration = Vector3();	//Reset acceleration as it is recalculated every frame
+}
+
+void PhysicsModel::CalculateWeight()
+{
+	m_weight.y = m_mass * m_gravityAcceleration;
+}
+
+void PhysicsModel::ApplyGravity()
+{
+	if (m_enableGravity)
+	{
+		AddForce(m_weight);
+	}
 }
