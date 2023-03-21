@@ -2,6 +2,7 @@
 #define PHYSICS_MODEL_H
 
 #include "Transform.h"
+#include "Constants.h"
 
 class PhysicsModel
 {
@@ -45,13 +46,28 @@ public:	//Public Methods
 	void SetMass(float mass) { m_mass = mass; CalculateWeight(); };
 	/// <returns>The object's mass, in kg</returns>
 	float GetMass() const { return m_mass; };
-
+	
 	/// <param name="g">Acceleration due to gravity, in m/s. A negative value will act downwards.</param>
 	void SetGravityAcceleration(float g) { m_gravityAcceleration = g; CalculateWeight(); };
 	/// <returns>Acceleration due to gravity, in m/s. A negative value will act downwards.</returns>
 	float GetGravityAcceleration() { return m_gravityAcceleration; };
 	/// <param name="enableGravity">Whether or not to apply the force of weight each frame.</param>
 	void EnableGravity(bool enableGravity) { m_enableGravity = enableGravity; };
+
+	/// <param name="mass">The density, in kg/m^3, of the fluid the object is moving through.</param>
+	void SetFluidDensity(float fluidDensity) { m_fluidDensity = fluidDensity; CalculateDragCoefficient(); };
+	/// <returns>The density, in kg/m^3, of the fluid the object is moving through.</returns>
+	float GetFluidDensity() const { return m_fluidDensity; };
+	
+	/// <param name="mass">The drag coefficent of the object from the drag coefficients dictionary. Disables dynamic drag coefficents</param>
+	void SetDragCoefficient(float dragCoefficient) { m_dragCoefficient = dragCoefficient; m_enableDynamicDragCoefficient = false; };
+	/// <returns>The drag coefficent of the object from the drag coefficients dictionary</returns>
+	float GetDragCoefficient() const { return m_dragCoefficient; };
+
+	/// <param name="mass">The cross sectional area of the object perpendicular the direction of motion relative to the fluid, in m^2</param>
+	void SetReferenceArea(Vector3 referenceArea) { m_referenceArea = referenceArea; };
+	/// <returns>The cross sectional area of the object perpendicular the direction of motion relative to the fluid, in m^2</returns>
+	Vector3 GetReferenceArea() const { return m_referenceArea; };
 
 #pragma endregion
 
@@ -71,6 +87,10 @@ protected:	//Protected Methods
 	void ClearForceAndAcceleration();
 	/// <summary>Recalculates weight, using Fg = g * m</summary>
 	void CalculateWeight();
+	/// <summary>If using dynamic drag coefficients, Recalculates the drag coefficent, according to cd = 2Fd / rho * u^2 * A</summary>
+	void CalculateDragCoefficient();
+
+
 
 #pragma endregion
 
@@ -78,6 +98,8 @@ protected:	//Protected Methods
 
 	/// <summary>Adds the force of weight, if m_enableGravity == true.</summary>
 	void ApplyGravity();
+	/// <summary>Adds the force of drag and air resistance, if m_enableDrag == true;</summary>
+	void ApplyDrag();
 
 #pragma endregion
 
@@ -94,12 +116,22 @@ protected:	//Protected Variables
 	/// <summary>The object's mass, in kg</summary>
 	float m_mass;
 
-
-	/// <summary>The acceleration due to gravity, in m/s.</summary>
-	float m_gravityAcceleration = -9.81f;
+	/// <summary>The acceleration due to gravity, in m/s. Default value from https://en.wikipedia.org/wiki/Gravity_of_Earth</summary>
+	float m_gravityAcceleration = EARTH_GRAVITY_ACCELERATION;
 	/// <summary>m_mass * m_gravityAcceleration in the negative y, as a force in N</summary>
 	Vector3 m_weight = Vector3(0.0f, m_gravityAcceleration, 0.0f);
 	bool m_enableGravity = true;
+
+	/// <summary>Whether or not to recalculate drag coefficient according to the drag force and flow speed each frame. Defaults to off to remain performant.</summary>
+	bool m_enableDynamicDragCoefficient = false;
+	/// <summary>The mass density of the fluid the object is moving through in kg/m^3. Default value from https://en.wikipedia.org/wiki/Density_of_air</summary>
+	float m_fluidDensity = AIR_FLUID_DENSITY;
+	/// <summary>The drag coefficient of the the object. Default value from https://en.wikipedia.org/wiki/Drag_coefficient</summary>
+	float m_dragCoefficient = CUBE_DRAG_COEFFICIENT;
+	/// <summary>The magnitude of the drag force acting against an object in N, used in calculating drag coefficient.</summary>
+	float m_dragForceMagnitude;
+	/// <summary>The projected frontal area of the object, in regards to the direction its moving.</summary>
+	Vector3 m_referenceArea = CUBE_REFERENCE_AREA;
 };
 
 #endif // !PHYSICS_MODEL_H

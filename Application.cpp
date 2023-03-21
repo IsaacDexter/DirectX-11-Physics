@@ -189,6 +189,7 @@ HRESULT Application::InitWorld()
 		gameObject->GetTransform()->SetPosition(-3.0f + (i * 2.5f), 1.0f, 10.0f);
 		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 		gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
+		gameObject->GetPhysicsModel()->EnableGravity(false);
 
 		m_gameObjects.push_back(gameObject);
 	}

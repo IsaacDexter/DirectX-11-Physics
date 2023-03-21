@@ -48,6 +48,7 @@
     <ClInclude Include="ConstantAccelerationModel.h">
       <Filter>PhysicsModels</Filter>
     </ClInclude>
+    <ClInclude Include="Constants.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />

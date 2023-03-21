@@ -391,6 +391,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantAccelerationModel.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="ConstantVelocityModel.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="GameObject.h" />

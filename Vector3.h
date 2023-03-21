@@ -18,12 +18,16 @@ public:
     Vector3(void);
     Vector3(float xi, float yi, float zi);
 
-    float Magnitude(void);
-    void  Normalize(void);
-    void  Reverse(void);
+    float   Magnitude(void);
+    float   MagnitudeSq(void);
+    void    Normalize(void);
+    Vector3 Normalized(void);
+    void    Reverse(void);
 
+    bool operator==(Vector3 u);
     Vector3& operator+=(Vector3 u);
     Vector3& operator-=(Vector3 u);
+    Vector3& operator*=(Vector3 u);
     Vector3& operator*=(float s);
     Vector3& operator/=(float s);
     Vector3 operator-(void);
@@ -50,6 +54,11 @@ inline float Vector3::Magnitude(void)
     return (float)sqrt(x * x + y * y + z * z);
 }
 
+inline float Vector3::MagnitudeSq(void)
+{
+    return (float)(x * x + y * y + z * z);
+}
+
 inline void Vector3::Normalize(void)
 {
     float m = (float)sqrt(x * x + y * y + z * z);
@@ -63,11 +72,31 @@ inline void Vector3::Normalize(void)
     if (fabs(z) < tol) z = 0.0f;
 }
 
+inline Vector3 Vector3::Normalized(void)
+{
+    float m = (float)sqrt(x * x + y * y + z * z);
+    Vector3 v = Vector3(x, y, z);
+    if (m <= tol) m = 1;
+    v.x /= m;
+    v.y /= m;
+    v.z /= m;
+
+    if (fabs(v.x) < tol) v.x = 0.0f;
+    if (fabs(v.y) < tol) v.y = 0.0f;
+    if (fabs(v.z) < tol) v.z = 0.0f;
+    return v;
+}
+
 inline void Vector3::Reverse(void)
 {
     x = -x;
     y = -y;
     z = -z;
+}
+
+inline bool Vector3::operator==(Vector3 u)
+{
+    return (x == u.x && y == u.y && z == u.z);
 }
 
 inline Vector3& Vector3::operator+=(Vector3 u)
@@ -83,6 +112,14 @@ inline Vector3& Vector3::operator-=(Vector3 u)
     x -= u.x;
     y -= u.y;
     z -= u.z;
+    return *this;
+}
+
+inline Vector3& Vector3::operator*=(Vector3 u)
+{
+    x *= u.x;
+    y *= u.y;
+    z *= u.z;
     return *this;
 }
 

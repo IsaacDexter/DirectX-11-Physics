@@ -5,6 +5,8 @@ PhysicsModel::PhysicsModel(Transform* transform, float mass = 1.0f)
 	m_transform = transform;
 	m_mass = mass;
 	CalculateWeight();
+
+	m_referenceArea *= m_transform->GetScale();
 }
 
 void PhysicsModel::Update(float dt)
@@ -12,6 +14,7 @@ void PhysicsModel::Update(float dt)
 	//Apply forces; calculate acc; calculate vel and dis; update position; clear acc and forces
 
 	ApplyGravity();
+	ApplyDrag();
 
 	CalculateAcceleration();
 	CalculateVelocity(dt);
@@ -49,10 +52,31 @@ void PhysicsModel::CalculateWeight()
 	m_weight.y = m_mass * m_gravityAcceleration;
 }
 
+void PhysicsModel::CalculateDragCoefficient()
+{
+	/// <summary>flow speed of the object relative to the fluid</summary>
+	float flowSpeedSq = m_velocity.MagnitudeSq();
+	if (!(m_dragForceMagnitude == 0.0f || flowSpeedSq == 0.0f))	//If the object is not moving, or there is no fluid density, don;t recalculate the drag coefficient.
+	{
+		m_dragCoefficient = (2 * m_dragForceMagnitude) / (m_fluidDensity * flowSpeedSq * m_referenceArea.x);	//cd = 2Fd / rho * u^2 * A
+	}
+}
+
 void PhysicsModel::ApplyGravity()
 {
-	if (m_enableGravity)
+	if (m_enableGravity)	//If gravity is being applied, apply weight downwards
 	{
-		AddForce(m_weight);
+		AddForce(m_weight);	
+	}
+}
+
+void PhysicsModel::ApplyDrag()
+{
+	if (m_fluidDensity > 0.0f && m_velocity.MagnitudeSq() > 0.0f)	//if we are in a fluid that applies drag (i.e. this is set to 0 for objects that feel no air resistance.)
+	{
+		m_dragForceMagnitude = 0.5f * m_fluidDensity * m_dragCoefficient * m_dragCoefficient * m_referenceArea.x * m_velocity.MagnitudeSq();	//|Fd| = 0.5 * rho * Cd * A * |V|^2
+		Vector3 dragForce = m_velocity.Normalized() * -1;	//Find the direction against movement
+		dragForce *= m_dragForceMagnitude;	//multiply this direction by the dragnitude (drag magnitude lol)
+		AddForce(dragForce);
 	}
 }
