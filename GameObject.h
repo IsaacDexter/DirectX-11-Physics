@@ -8,7 +8,7 @@
 #include "Structures.h"
 #include "Transform.h"
 #include "Appearance.h"
-#include "PhysicsModel.h"
+#include "ParticleModel.h"
 
 using namespace DirectX;
 using namespace std;

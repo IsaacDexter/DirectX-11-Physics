@@ -34,6 +34,7 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="PhysicsModel.h" />
     <ClInclude Include="OrbitingCamera.h" />
+    <ClInclude Include="ParticleModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -51,6 +52,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="PhysicsModel.cpp" />
     <ClCompile Include="OrbitingCamera.cpp" />
+    <ClCompile Include="ParticleModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
