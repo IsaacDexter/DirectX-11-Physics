@@ -100,7 +100,7 @@ void PhysicsModel::ApplyFriction()
 	{
 		//float normalForceMagnitude = abs(fmin(m_netforce.y, 0.0f));	//Get the downwards net force, and then get its normal by absoluting it. 
 		float normalForceMagnitude = fabs(fmin(m_weight.y, 0.0f));	//until collision is done, simply use the weight for now.
-		float frictionForceMagnitude = STEEL_STEEL_FRICTION_COEFFICIENT * normalForceMagnitude;	//Get the strength of the frictional force
+		float frictionForceMagnitude = fmin(STEEL_STEEL_DYNAMIC_FRICTION_COEFFICIENT * normalForceMagnitude, m_velocity.Magnitude());	//Get the strength of the frictional force
 		Vector3 frictionForce = m_velocity.Normalized() * -1.0f;	//Get the direction against the movement
 		frictionForce *= frictionForceMagnitude;	//Apply the strength of the frictional force
 		AddForce(frictionForce);
