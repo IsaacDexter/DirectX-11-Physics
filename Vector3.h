@@ -23,6 +23,7 @@ public:
     void    Normalize(void);
     Vector3 Normalized(void);
     void    Reverse(void);
+    void    Truncate(float min);
 
     bool operator==(Vector3 u);
     Vector3& operator+=(Vector3 u);
@@ -92,6 +93,14 @@ inline void Vector3::Reverse(void)
     x = -x;
     y = -y;
     z = -z;
+}
+
+/// <param name="min">The smallest value the float can be aside from zero.</param>
+inline void Vector3::Truncate(float min = 0.001f)
+{
+    if (fabs(x) < min) x = 0.0f;
+    if (fabs(y) < min) y = 0.0f;
+    if (fabs(z) < min) z = 0.0f;
 }
 
 inline bool Vector3::operator==(Vector3 u)

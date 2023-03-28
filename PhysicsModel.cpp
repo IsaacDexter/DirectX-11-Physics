@@ -1,4 +1,6 @@
 #include "PhysicsModel.h"
+#include "Debug.h"
+#include <string>
 
 PhysicsModel::PhysicsModel(Transform* transform, float mass = 1.0f)
 {
@@ -28,11 +30,13 @@ void PhysicsModel::Update(float dt)
 void PhysicsModel::CalculateAcceleration()
 {
 	m_acceleration += m_netforce / m_mass;	//a = f / m
+	m_acceleration.Truncate();	//Stop the acceleration from wasting processing on insignificant values
 }
 
 void PhysicsModel::CalculateVelocity(float dt)
 {
 	m_velocity += m_acceleration * dt;					//dv = a * dt
+	m_velocity.Truncate();	//stops the velocity from wasting processing on insignificant values
 }
 
 void PhysicsModel::CalculateDisplacement(float dt)
@@ -96,7 +100,7 @@ void PhysicsModel::ApplyDrag()
 
 void PhysicsModel::ApplyFriction()
 {
-	if (IsGrounded())
+	if (IsGrounded() && m_velocity.MagnitudeSq() > 0.0f) //if we are in contact with a surface, and are moving, apply dynamic friction.
 	{
 		//float normalForceMagnitude = abs(fmin(m_netforce.y, 0.0f));	//Get the downwards net force, and then get its normal by absoluting it. 
 		float normalForceMagnitude = fabs(fmin(m_weight.y, 0.0f));	//until collision is done, simply use the weight for now.
@@ -104,5 +108,6 @@ void PhysicsModel::ApplyFriction()
 		Vector3 frictionForce = m_velocity.Normalized() * -1.0f;	//Get the direction against the movement
 		frictionForce *= frictionForceMagnitude;	//Apply the strength of the frictional force
 		AddForce(frictionForce);
+		DebugPrintF("Friction Force = ( %f , %f , %f )\n", frictionForce.x, frictionForce.y, frictionForce.z);
 	}
 }
