@@ -11,9 +11,11 @@ public:	//Public Methods
 	/// <param name="mass">The object's mass, in kg. Defaults to 1 kg</param>
 	PhysicsModel(Transform* transform, float mass);
 
-	/// <summary>Calculates the object's acceleration, velocity and displacement from the forces applied to it; Appliest the displacement; Resets acceleration and force</summary>
+	~PhysicsModel();
+
+	/// <summary>Calculates the object's acceleration, velocity and displacement from the forces applied to it; Applies the displacement; Resets acceleration and force</summary>
 	/// <param name="dt">The change in time since last frame</param>
-	virtual void Update(float dt) = 0;
+	virtual void Update(float dt);
 
 	/// <param name="force">The force to be added, in N</param>
 	void AddForce(Vector3 force) { m_netforce += force; };

@@ -9,6 +9,10 @@ PhysicsModel::PhysicsModel(Transform* transform, float mass = 1.0f)
 	m_referenceArea *= m_transform->GetScale();
 }
 
+PhysicsModel::~PhysicsModel()
+{
+}
+
 void PhysicsModel::Update(float dt)
 {
 	//Apply forces; calculate acc; calculate vel and dis; update position; clear acc and forces
