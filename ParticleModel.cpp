@@ -9,6 +9,7 @@ void ParticleModel::Update(float dt)
 {
 	ApplyGravity();
 	ApplyDrag();
+	ApplyFriction();
 
 	CalculateAcceleration();
 	CalculateVelocity(dt);

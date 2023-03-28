@@ -189,7 +189,7 @@ HRESULT Application::InitWorld()
 		gameObject->GetTransform()->SetPosition(-3.0f + (i * 2.5f), 1.0f, 10.0f);
 		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 		gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
-		gameObject->GetPhysicsModel()->EnableGravity(false);
+		gameObject->GetPhysicsModel()->EnableGravity(true);
 
 		m_gameObjects.push_back(gameObject);
 	}
@@ -693,42 +693,42 @@ void Application::moveForward(int objectNumber)
 {
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(0, 0, -1);
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(0, 0, -1);
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 0.0f, -1.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 0.0f, -10.0f);
 }
 
 void Application::moveBackward(int objectNumber)
 {
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(0, 0, 1);
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(0, 0, 1);
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 0.0f, 1.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 0.0f, 10.0f);
 }
 
 void Application::moveUp(int objectNumber)
 {
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(0, 1, 0);
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(0, 1, 0);
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 1.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 10.0f, 0.0f);
 }
 
 void Application::moveDown(int objectNumber)
 {
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(0, -1, 0);
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(0, -1, 0);
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, -1.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, -10.0f, 0.0f);
 }
 
 void Application::moveLeft(int objectNumber)
 {
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(1, 0, 0);
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(1, 0, 0);
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(1.0f, 0.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(10.0f, 0.0f, 0.0f);
 }
 
 void Application::moveRight(int objectNumber)
 {
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetAcceleration(-1, 0, 0);
 	//m_gameObjects[objectNumber]->GetPhysicsModel()->SetVelocity(-1, 0, 0);
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(-1.0f, 0.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(-10.0f, 0.0f, 0.0f);
 }
 
 #pragma endregion

@@ -89,6 +89,8 @@ protected:	//Protected Methods
 	void CalculateWeight();
 	/// <summary>If using dynamic drag coefficients, Recalculates the drag coefficent, according to cd = 2Fd / rho * u^2 * A</summary>
 	void CalculateDragCoefficient();
+	/// <returns>If y is less than or equal to 1.0f, and cancels movement in the negative y</returns>
+	bool IsGrounded();
 
 
 
@@ -100,6 +102,8 @@ protected:	//Protected Methods
 	void ApplyGravity();
 	/// <summary>Adds the force of drag and air resistance, if m_enableDrag == true;</summary>
 	void ApplyDrag();
+	/// <summary>If the object is grounded, adds the force of friction parallel and opposite to the direction of motion, according to the normal equal downward force of the object.</summary>
+	void ApplyFriction();
 
 #pragma endregion
 

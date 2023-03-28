@@ -3,6 +3,7 @@
 
 #include "Vector3.h"
 
+//https://en.wikipedia.org/wiki/Drag_coefficient
 #define SPHERE_DRAG_COEFFICIENT 0.47f
 #define HALF_SPHERE_DRAG_COEFFICIENT 0.42f
 #define CONE_DRAG_COEFFICIENT 0.5f
@@ -11,16 +12,22 @@
 #define LONG_CYLINDER_DRAG_COEFFICIENT 0.82f
 #define SHORT_CYLINDER_DRAG_COEFFICIENT 0.82f
 
+//Surface area of the frontal, plan and elevation cross sections
 #define SPHERE_REFERENCE_AREA Vector3(3.14f, 3.14f, 3.14f)
-#define HALF_SPHERE_REFERENCE_AREA Vector3(1.57f, 3.14f, 1.57f)
-#define CONE_REFERENCE_AREA Vector3(3.14f, 2.0f, 2.0f)
+#define HALF_SPHERE_REFERENCE_AREA Vector3(3.14f, 1.57f, 1.57f)
+#define CONE_REFERENCE_AREA Vector3(1.57f, 2.0f, 2.0f)
 #define CUBE_REFERENCE_AREA Vector3(4.0f, 4.0f, 4.0f)
 #define ANGLED_CUBE_REFERENCE_AREA Vector3(5.67f, 4.0f, 5.67f)
 #define LONG_CYLINDER_REFERENCE_AREA Vector3(3.14f, 4.0f, 4.0f)
 #define SHORT_CYLINDER_REFERENCE_AREA Vector3(3.14f, 2.0f, 2.0f)
 
+//https://en.wikipedia.org/wiki/Density_of_air
 #define AIR_FLUID_DENSITY 1.204f
 
+//https://en.wikipedia.org/wiki/Standard_gravity
 #define EARTH_GRAVITY_ACCELERATION -9.81f
+
+//https://en.wikipedia.org/wiki/Friction
+#define STEEL_STEEL_FRICTION_COEFFICIENT 0.74
 
 #endif // !CONSTANTS_H
