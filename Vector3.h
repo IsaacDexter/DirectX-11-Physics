@@ -6,7 +6,7 @@
 // Vector3 Class and Vector3 functions
 //------------------------------------------------------------------------
 
-//Minimum tolerance before treating the value as 0
+//Minimum tolerance before treating the value as 0 in truncation
 float const tol = 0.0001f;
 
 class Vector3 {

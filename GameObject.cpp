@@ -2,7 +2,7 @@
 
 GameObject::GameObject(string type, Appearance* appearance, Transform* transform) : m_type(type), m_appearance(appearance), m_transform(transform)
 {
-	m_physicsModel = new ParticleModel(m_transform, 1.0f);
+	m_physicsModel = new RigidBodyModel(m_transform, 1.0f);
 }
 
 GameObject::~GameObject()

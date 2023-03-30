@@ -18,6 +18,9 @@
     <Filter Include="PhysicsModels">
       <UniqueIdentifier>{ee8a8210-8e41-4d00-93d3-c0a8f0f8a10e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Colliders">
+      <UniqueIdentifier>{e03dbabf-4c81-46f3-884a-70c9c67760c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -49,6 +52,13 @@
       <Filter>PhysicsModels</Filter>
     </ClInclude>
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="RigidBodyModel.h">
+      <Filter>PhysicsModels</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -77,6 +87,13 @@
     <ClCompile Include="ConstantAccelerationModel.cpp">
       <Filter>PhysicsModels</Filter>
     </ClCompile>
+    <ClCompile Include="RigidBodyModel.cpp">
+      <Filter>PhysicsModels</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Colliders</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

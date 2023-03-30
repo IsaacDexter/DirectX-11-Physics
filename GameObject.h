@@ -9,7 +9,7 @@
 #include "Structures.h"
 #include "Transform.h"
 #include "Appearance.h"
-#include "ParticleModel.h"
+#include "RigidBodyModel.h"
 
 using namespace DirectX;
 using namespace std;

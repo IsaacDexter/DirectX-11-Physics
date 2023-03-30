@@ -3,6 +3,7 @@
 
 #include "Transform.h"
 #include "Constants.h"
+#include "Collider.h"
 
 class PhysicsModel
 {
@@ -108,8 +109,9 @@ protected:	//Protected Methods
 #pragma endregion
 
 protected:	//Protected Variables
-
 	Transform* m_transform;
+	Collider* m_collider;
+
 	/// <summary>The objects velocity in m/s</summary>
 	Vector3 m_velocity;
 	/// <summary>The object's acceleration in m/s^2</summary>
