@@ -5,6 +5,7 @@
 PhysicsModel::PhysicsModel(Transform* transform, float mass = 1.0f)
 {
 	m_transform = transform;
+	m_collider = nullptr;
 	m_mass = mass;
 	CalculateWeight();
 

@@ -735,6 +735,15 @@ void Application::Update()
 	m_timer->Tick();
 	}
 
+	//Check for collisions between spheres
+	if (m_gameObjects[1]->GetPhysicsModel()->IsCollidable() && m_gameObjects[2]->GetPhysicsModel()->IsCollidable())
+	{
+		if (m_gameObjects[1]->GetPhysicsModel()->GetCollider()->CollidesWith(*m_gameObjects[2]->GetPhysicsModel()->GetCollider()));
+		{
+			DebugPrintF("Collision");
+		}
+	}
+
 }
 
 void Application::UpdateWorld(float dt)

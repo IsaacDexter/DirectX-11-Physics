@@ -25,6 +25,13 @@ public:	//Public Methods
 
 #pragma region SettersAndGetters
 
+	/// <returns>if this model has a collider set</returns>
+	bool IsCollidable() const { return m_collider != nullptr; };
+	/// <returns>This model's collider</returns>
+	void SetCollider(Collider* collider) { m_collider = collider; };
+	/// <returns>This model's collider, if it has one</returns>
+	Collider* GetCollider() const { return m_collider; };
+
 	/// <param name="velocity">The object's velocity in m/s</param>
 	void SetVelocity(Vector3 velocity) { m_velocity = velocity; }
 	/// <param name="x">The object's velocity in the x direction in m/s</param>
