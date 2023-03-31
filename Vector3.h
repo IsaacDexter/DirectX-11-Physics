@@ -2,6 +2,7 @@
 #define _USE_MATH_DEFINES
 
 #include <math.h>
+#include <algorithm>
 //------------------------------------------------------------------------
 // Vector3 Class and Vector3 functions
 //------------------------------------------------------------------------
@@ -24,6 +25,7 @@ public:
     Vector3 Normalized(void);
     void    Reverse(void);
     void    Truncate(float min);
+    void    Clamp(Vector3 min, Vector3 max);
 
     bool operator==(Vector3 u);
     Vector3& operator+=(Vector3 u);
@@ -101,6 +103,13 @@ inline void Vector3::Truncate(float min = 0.001f)
     if (fabs(x) < min) x = 0.0f;
     if (fabs(y) < min) y = 0.0f;
     if (fabs(z) < min) z = 0.0f;
+}
+
+inline void Vector3::Clamp(Vector3 min, Vector3 max)
+{
+    x = std::clamp(x, min.x, max.x);
+    y = std::clamp(y, min.y, max.y);
+    z = std::clamp(z, min.z, max.z);
 }
 
 inline bool Vector3::operator==(Vector3 u)
