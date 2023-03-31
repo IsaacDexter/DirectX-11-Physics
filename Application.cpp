@@ -190,6 +190,7 @@ HRESULT Application::InitWorld()
 		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 		gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
 		gameObject->GetPhysicsModel()->EnableGravity(true);
+		gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
 
 		m_gameObjects.push_back(gameObject);
 	}
@@ -738,9 +739,12 @@ void Application::Update()
 	//Check for collisions between spheres
 	if (m_gameObjects[1]->GetPhysicsModel()->IsCollidable() && m_gameObjects[2]->GetPhysicsModel()->IsCollidable())
 	{
-		if (m_gameObjects[1]->GetPhysicsModel()->GetCollider()->CollidesWith(*m_gameObjects[2]->GetPhysicsModel()->GetCollider()));
+		bool collided = m_gameObjects[1]->GetPhysicsModel()->GetCollider()->CollidesWith(*m_gameObjects[2]->GetPhysicsModel()->GetCollider());
+		if (collided)
 		{
-			DebugPrintF("Collision");
+			Vector3 pos1 = m_gameObjects[1]->GetTransform()->GetPosition();
+			Vector3 pos2 = m_gameObjects[2]->GetTransform()->GetPosition();
+			DebugPrintF("1 and 2 collided, with 1 at (%f, %f, %f), and 2 at (%f, %f, %f).\n", pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
 		}
 	}
 

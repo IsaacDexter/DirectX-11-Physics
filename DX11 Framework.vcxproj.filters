@@ -58,7 +58,9 @@
     <ClInclude Include="Collider.h">
       <Filter>Colliders</Filter>
     </ClInclude>
-    <ClInclude Include="SphereCollider.h" />
+    <ClInclude Include="SphereCollider.h">
+      <Filter>Colliders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -93,7 +95,9 @@
     <ClCompile Include="Collider.cpp">
       <Filter>Colliders</Filter>
     </ClCompile>
-    <ClCompile Include="SphereCollider.cpp" />
+    <ClCompile Include="SphereCollider.cpp">
+      <Filter>Colliders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

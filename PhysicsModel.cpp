@@ -109,6 +109,6 @@ void PhysicsModel::ApplyFriction()
 		Vector3 frictionForce = m_velocity.Normalized() * -1.0f;	//Get the direction against the movement
 		frictionForce *= frictionForceMagnitude;	//Apply the strength of the frictional force
 		AddForce(frictionForce);
-		DebugPrintF("Friction Force = ( %f , %f , %f )\n", frictionForce.x, frictionForce.y, frictionForce.z);
+		//DebugPrintF("Friction Force = ( %f , %f , %f )\n", frictionForce.x, frictionForce.y, frictionForce.z);
 	}
 }
