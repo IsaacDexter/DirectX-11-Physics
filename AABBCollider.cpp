@@ -38,10 +38,16 @@ bool AABBCollider::CollidesWith(AABBCollider& other)
 bool AABBCollider::CollidesWith(SphereCollider& other)
 {
 	float distanceSq = DistanceSq(other.GetPosition(), *this);
-	return distanceSq <= other.GetRadius() * other.GetRadius();
+	return distanceSq <= other.GetRadiusSq();
 }
 
 bool AABBCollider::CollidesWith(SphereCollider& other, Vector3& out)
 {
-	return false;
+	//Find the closest point on this box to the centre of the sphere
+	out = ClosestPoint(other.GetPosition(), *this);
+
+	//The sphere intersects with this box if the squared distance from the sphere's centre to the closest point is less than the squared sphere radius
+	float distanceSq = (out - other.GetPosition()).MagnitudeSq();
+	return distanceSq <= other.GetRadiusSq();
+	
 }

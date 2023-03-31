@@ -30,7 +30,7 @@ public:
 	/// <param name="point">The point, p</param>
 	/// <param name="AABB">The axis-aligned bounding box, b</param>
 	/// <returns>The distance, between the two.</returns>
-	float Distance(Vector3 point, AABBCollider AABB) { return sqrt(DistanceSq(point, AABB)); };
+	float Distance(Vector3 point, AABBCollider AABB);
 
 	Vector3 ClosestPoint(Vector3 point, AABBCollider AABB);
 

@@ -23,6 +23,9 @@ public:
 
 	/// <returns>The radius, in m, of the sphere modelled</returns>
 	float GetRadius() const { return m_radius; };
+	/// <returns>The radius, in m, of the sphere modelled, squared</returns>
+	float GetRadiusSq() const { return m_radius * m_radius; };
+
 protected:
 	/// <param name="radius">The radius, in m, of the sphere modelled</param>
 	float m_radius = 1.0f;

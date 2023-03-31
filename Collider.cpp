@@ -50,6 +50,11 @@ float Collider::DistanceSq(Vector3 p, AABBCollider b)
 	return distanceSq;
 }
 
+float Collider::Distance(Vector3 point, AABBCollider AABB)
+{
+	return sqrt(DistanceSq(point, AABB));
+}
+
 Vector3 Collider::ClosestPoint(Vector3 p, AABBCollider b)
 {
 	Vector3 closestPoint = p;
