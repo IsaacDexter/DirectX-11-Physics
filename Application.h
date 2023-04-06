@@ -16,6 +16,7 @@
 #include "Timer.h"
 #include "Debug.h"
 #include "SphereCollider.h"
+#include "AABBCollider.h"
 
 using namespace DirectX;
 
