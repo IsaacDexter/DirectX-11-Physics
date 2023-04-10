@@ -28,7 +28,7 @@ AABBCollider::AABBCollider(Transform* transform, float dx, float dy, float dz, f
 bool AABBCollider::CollidesWith(Collider& other)
 {
 	//return false;
-	return other.CollidesWith(*this);
+	return other.CollidesWith(static_cast<AABBCollider&>(*this));
 }
 
 bool AABBCollider::CollidesWith(AABBCollider& other)

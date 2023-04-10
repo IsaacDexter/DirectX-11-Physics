@@ -6,6 +6,40 @@
 class SphereCollider;
 class AABBCollider;
 
+class Component abstract
+{
+public:
+	virtual bool Method(Component& other) = 0;
+};
+
+class DerivedComponent : public Component
+{
+public:
+	virtual bool Method(Component& other) override;
+	virtual bool Method(DerivedComponent& other);
+};
+
+class Foo
+{
+private:
+	Component* m_component;
+public:
+	Foo()
+	{
+		m_component = new DerivedComponent();
+	}
+
+	Component* GetComponent()
+	{
+
+		Foo foo1 = Foo();
+		Foo foo2 = Foo();
+		foo1.GetComponent()->Method(*foo2.GetComponent());
+
+		return m_component;
+	}
+};
+
 class Collider abstract
 {
 protected:
