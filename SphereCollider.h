@@ -20,6 +20,7 @@ public:
 	/// <param name="other">The object this object is colliding with</param>
 	/// <returns>Whether or not the objects have collided, true for a collision</returns>
 	virtual bool CollidesWith(SphereCollider& other) override;
+	virtual bool CollidesWith(AABBCollider& other) override;
 
 	/// <returns>The radius, in m, of the sphere modelled</returns>
 	float GetRadius() const { return m_radius; };

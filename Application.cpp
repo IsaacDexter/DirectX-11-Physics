@@ -693,12 +693,12 @@ void Application::Cleanup()
 
 void Application::moveForward(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 0.0f, -10.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 0.0f, -1.0f);
 }
 
 void Application::moveBackward(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 0.0f, 10.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 0.0f, 1.0f);
 }
 
 void Application::moveUp(int objectNumber)
@@ -708,17 +708,17 @@ void Application::moveUp(int objectNumber)
 
 void Application::moveDown(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, -10.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, -1.0f, 0.0f);
 }
 
 void Application::moveLeft(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(10.0f, 0.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(1.0f, 0.0f, 0.0f);
 }
 
 void Application::moveRight(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(-10.0f, 0.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(-1.0f, 0.0f, 0.0f);
 }
 
 #pragma endregion
@@ -726,7 +726,8 @@ void Application::moveRight(int objectNumber)
 void Application::Update()
 {
     // Update our time
-	float accumulator = m_timer->GetDeltaTime();
+	static float accumulator = 0.0f;
+	accumulator += m_timer->GetDeltaTime();
 	string deltaTime = to_string(accumulator);
 
 	while (accumulator >= FPS60)

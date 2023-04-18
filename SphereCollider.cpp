@@ -18,3 +18,8 @@ bool SphereCollider::CollidesWith(SphereCollider& other)
 	bool collided = distanceSq <= radiiSq;
 	return collided;	//So long as the distance squared between the two is less than the radii sum squared, the two are touching!
 }
+
+bool SphereCollider::CollidesWith(AABBCollider& other)
+{
+	return false;
+}

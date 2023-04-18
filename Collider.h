@@ -49,6 +49,7 @@ public:
 	
 	virtual bool CollidesWith(Collider& other) = 0;
 	virtual bool CollidesWith(SphereCollider& other) = 0;
+	virtual bool CollidesWith(AABBCollider& other) = 0;
 
 	Vector3 GetPosition() const { return m_transform->GetPosition(); };
 

@@ -37,7 +37,7 @@ public:
     /// <summary>If the distance between the centres of the objects is greater than the sum of half extents in all directions, there has been a collision</summary>
     /// <param name="other">The other object's AABB collider</param>
     /// <returns>Whether or not the two colliders are overlapping</returns>
-    virtual bool CollidesWith(AABBCollider& other);
+    virtual bool CollidesWith(AABBCollider& other) override;
     /// <summary>Finds the distance (squared) between the closest edge of the bounding box and the centre of the circle. If this distance is less than the radius (squared) of the sphere, the objects have collided</summary>
     /// <param name="other">The other object's sphere collider</param>
     /// <returns>whether or not there was a collision</returns>

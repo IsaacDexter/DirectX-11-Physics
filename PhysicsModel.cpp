@@ -92,7 +92,7 @@ void PhysicsModel::ApplyDrag()
 {
 	if (m_fluidDensity > 0.0f && m_velocity.MagnitudeSq() > 0.0f)	//if we are in a fluid that applies drag (i.e. this is set to 0 for objects that feel no air resistance.)
 	{
-		m_dragForceMagnitude = 0.5f * m_fluidDensity * m_dragCoefficient * m_dragCoefficient * m_referenceArea.x * m_velocity.MagnitudeSq();	//|Fd| = 0.5 * rho * Cd * A * |V|^2
+		m_dragForceMagnitude = 0.5f * m_fluidDensity * m_dragCoefficient * m_referenceArea.x * m_velocity.MagnitudeSq();	//|Fd| = 0.5 * rho * Cd * A * |V|^2
 		Vector3 dragForce = m_velocity.Normalized() * -1;	//Find the direction against movement
 		dragForce *= m_dragForceMagnitude;	//multiply this direction by the dragnitude (drag magnitude lol)
 		AddForce(dragForce);
