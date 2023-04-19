@@ -1,4 +1,5 @@
 #include "SphereCollider.h"
+#include "AABBCollider.h"
 
 SphereCollider::SphereCollider(Transform* transform, float radius) : Collider(transform)
 {
@@ -21,5 +22,6 @@ bool SphereCollider::CollidesWith(SphereCollider& other)
 
 bool SphereCollider::CollidesWith(AABBCollider& other)
 {
-	return false;
+	float distanceSq = DistanceSq(GetPosition(), other);
+	return distanceSq <= GetRadiusSq();
 }

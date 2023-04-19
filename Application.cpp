@@ -195,6 +195,7 @@ HRESULT Application::InitWorld()
 
 		m_gameObjects.push_back(gameObject);
 	}
+	gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
 
 	gameObject = new GameObject("Donut", new Appearance(donutGeometry, shinyMaterial), new Transform);
 	gameObject->GetTransform()->SetPosition(-6.0f, 0.5f, 10.0f);

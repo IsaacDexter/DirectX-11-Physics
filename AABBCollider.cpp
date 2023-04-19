@@ -62,5 +62,4 @@ bool AABBCollider::CollidesWith(SphereCollider& other, Vector3& out)
 	//The sphere intersects with this box if the squared distance from the sphere's centre to the closest point is less than the squared sphere radius
 	float distanceSq = (out - other.GetPosition()).MagnitudeSq();
 	return distanceSq <= other.GetRadiusSq();
-	
 }

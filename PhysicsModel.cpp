@@ -96,6 +96,7 @@ void PhysicsModel::ApplyDrag()
 		Vector3 dragForce = m_velocity.Normalized() * -1;	//Find the direction against movement
 		dragForce *= m_dragForceMagnitude;	//multiply this direction by the dragnitude (drag magnitude lol)
 		AddForce(dragForce);
+		//DebugPrintF("Drag Force = ( %f , %f , %f )\n", dragForce.x, dragForce.y, dragForce.z);
 	}
 }
 
