@@ -22,6 +22,11 @@ bool SphereCollider::CollidesWith(SphereCollider& other)
 
 bool SphereCollider::CollidesWith(AABBCollider& other)
 {
-	float distanceSq = DistanceSq(GetPosition(), other);
+	float distanceSq = other.DistanceSq(GetPosition());
 	return distanceSq <= GetRadiusSq();
+}
+
+bool SphereCollider::CollidesWith(PlaneCollider& other)
+{
+	return false;
 }

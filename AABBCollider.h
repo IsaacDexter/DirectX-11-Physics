@@ -47,6 +47,7 @@ public:
     /// <param name="out">the closest point, to the collision, regardless of if there was a collision</param>
     /// <returns>whether or not there was a collision</returns>
     virtual bool CollidesWith(SphereCollider& other, Vector3& out) ;
+    virtual bool CollidesWith(PlaneCollider& other) override;
 
     /// <returns>The object's centre (the objects position + it's centre offset)</returns>
     Vector3 GetCentre() const { return m_centre + GetPosition(); };
@@ -70,6 +71,26 @@ public:
     Vector3 GetMin() const { return m_transform->GetPosition() - m_halfExtents; };
     /// <returns>The position + the half extents</returns>
     Vector3 GetMax() const { return m_transform->GetPosition() + m_halfExtents; };
+
+#pragma region Calculations
+
+    /// <summary>Finds the squared distance between a point and this Axis-Aligned Bounding Box</summary>
+    /// <param name="point">The point, p</param>
+    /// <returns>The distance, squared, between the two.</returns>
+    float DistanceSq(Vector3 point);
+
+    /// <summary>Finds the distance between a point and this Axis-Aligned Bounding Box</summary>
+    /// <param name="point">The point, p</param>
+    /// <returns>The distance, between the two.</returns>
+    float Distance(Vector3 point);
+
+    /// <summary>Finds the closest point on this Axis-Aligned Bounding Box to a point</summary>
+    /// <param name="point">The point, p</param>
+    /// <returns>A point on this AABB that is closest to the p</returns>
+    Vector3 ClosestPoint(Vector3 point);
+
+#pragma endregion
+
 
 protected:
     /// <summary>The object's local offset from it's local origin for it's centre</summary>

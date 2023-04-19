@@ -27,8 +27,9 @@ public:	//Public Methods
 
 	/// <returns>if this model has a collider set</returns>
 	bool IsCollidable() const { return m_collider != nullptr; };
-	/// <returns>This model's collider</returns>
-	void SetCollider(Collider* collider) { m_collider = collider; };
+	/// <summary>Deletes the model's collider and replaces it</summary>
+	/// <param name="collider">This model's collider, if it has one</param>
+	void SetCollider(Collider* collider) { if (m_collider != nullptr) delete m_collider; m_collider = collider; };
 	/// <returns>This model's collider, if it has one</returns>
 	Collider* GetCollider() const { return m_collider; };
 

@@ -64,6 +64,7 @@
     <ClInclude Include="AABBCollider.h">
       <Filter>Colliders</Filter>
     </ClInclude>
+    <ClInclude Include="PlaneCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -104,6 +105,7 @@
     <ClCompile Include="AABBCollider.cpp">
       <Filter>Colliders</Filter>
     </ClCompile>
+    <ClCompile Include="PlaneCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

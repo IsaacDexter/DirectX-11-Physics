@@ -28,6 +28,7 @@ public:
     void    Clamp(Vector3 min, Vector3 max);
 
     bool operator==(Vector3 u);
+    bool operator!=(Vector3 u);
     Vector3& operator+=(Vector3 u);
     Vector3& operator-=(Vector3 u);
     Vector3& operator*=(Vector3 u);
@@ -115,6 +116,11 @@ inline void Vector3::Clamp(Vector3 min, Vector3 max)
 inline bool Vector3::operator==(Vector3 u)
 {
     return (x == u.x && y == u.y && z == u.z);
+}
+
+inline bool Vector3::operator!=(Vector3 u)
+{
+    return !(x == u.x && y == u.y && z == u.z);
 }
 
 inline Vector3& Vector3::operator+=(Vector3 u)
