@@ -766,94 +766,66 @@ void Application::UpdateWorld(float dt)
 	}
 }
 
-//void Application::HandleCollisions(float dt)
-//{
-//	for (GameObject* gameObject : m_gameObjects)	//For each object
-//	{
-//		if (!gameObject->GetPhysicsModel()->IsCollidable())
-//		{
-//			break;
-//		}
-//		//Cache the object's
-//		//inverse mass
-//		float inverseMass = 1 / gameObject->GetPhysicsModel()->GetMass();
-//		//restitution
-//		float resitution = gameObject->GetPhysicsModel()->GetRestitution();
-//		//collider
-//		Collider* collider = gameObject->GetPhysicsModel()->GetCollider();
-//		//velocity
-//		Vector3 velocity = gameObject->GetPhysicsModel()->GetVelocity();
-//		for (GameObject* other : m_gameObjects)	//For each other object
-//		{
-//			if (gameObject == other)	//assuming they aren't the same...
-//			{
-//				break;
-//			}
-//			if (!other->GetPhysicsModel()->IsCollidable())
-//			{
-//				break;
-//			}
-//
-//			//Log a collision between the two objects
-//			Collider* colliderOther = other->GetPhysicsModel()->GetCollider();
-//			Collision collision = collider->CollidesWith(*colliderOther);
-//			if (!collision.collided)
-//			{
-//				break;
-//			}
-//
-//			float inverseMassOther = 1 / other->GetPhysicsModel()->GetMass();
-//			float resitutionOther = other->GetPhysicsModel()->GetRestitution();
-//			Vector3 velocityOther = other->GetPhysicsModel()->GetVelocity();
-//
-//			Vector3 relativeVelocity = velocity - velocityOther;
-//
-//			//For each point of contact in the collision
-//			for (Contact* contact : collision.contacts)
-//			{
-//				//assuming the objects are approaching eachother...
-//				if (contact->normal * relativeVelocity > 0.0f)
-//				{
-//					break;
-//				}
-//				float totalVelocity = -(1 + resitution * resitutionOther) * (contact->normal * relativeVelocity);
-//				float momentum = totalVelocity * (inverseMass + inverseMassOther);
-//				gameObject->GetPhysicsModel()->ApplyImpulse(inverseMass * momentum * contact->normal);
-//				other->GetPhysicsModel()->ApplyImpulse(-(inverseMassOther * momentum * contact->normal));
-//			}
-//			collision.contacts.clear();
-//		}
-//	}
-//}
-
 void Application::HandleCollisions(float dt)
 {
-	GameObject* object1 = m_gameObjects[1];
-	GameObject* object2 = m_gameObjects[2];
-	if (object1->GetPhysicsModel()->IsCollidable() && object2->GetPhysicsModel()->IsCollidable())
+	//For each collidable object...
+	for (GameObject* gameObject : m_gameObjects)
 	{
-		Collider* collider1 = m_gameObjects[1]->GetPhysicsModel()->GetCollider();
-		Collider* collider2 = m_gameObjects[2]->GetPhysicsModel()->GetCollider();
-		Collision collision = collider1->CollidesWith(*collider2);
-		if (collision.collided)
+		if (!gameObject->GetPhysicsModel()->IsCollidable())
 		{
-			Vector3 collisionNormal = (object1->GetTransform()->GetPosition() - object2->GetTransform()->GetPosition()).Normalized();
-			float restitution = 0.5f;
-			Vector3 relativeVelocity = object1->GetPhysicsModel()->GetVelocity() - object2->GetPhysicsModel()->GetVelocity();
-			float inverseMass1 = 1 / object1->GetPhysicsModel()->GetMass();
-			float inverseMass2 = 1 / object2->GetPhysicsModel()->GetMass();
+			break;
+		}
 
-			if (collisionNormal * relativeVelocity < 0.0f)
+		//Cache the object's aspects that'll be used in the collision response
+		float inverseMass = 1 / gameObject->GetPhysicsModel()->GetMass();
+		float restitution = -(1 + gameObject->GetPhysicsModel()->GetRestitution());
+		Collider* collider = gameObject->GetPhysicsModel()->GetCollider();
+		Vector3 velocity = gameObject->GetPhysicsModel()->GetVelocity();
+
+		//for each other collidable object...
+		for (GameObject* other : m_gameObjects)	
+		{
+			if (gameObject == other)
 			{
-				float totalVelocity = -(1 + restitution) * (collisionNormal * relativeVelocity);
-				float momentum = totalVelocity * (inverseMass1 + inverseMass2);
-				object1->GetPhysicsModel()->ApplyImpulse(inverseMass1 * momentum * collisionNormal);
-				object2->GetPhysicsModel()->ApplyImpulse(-(inverseMass2 * momentum * collisionNormal));
+				break;
+			}
+			if (!other->GetPhysicsModel()->IsCollidable())
+			{
+				break;
 			}
 
+			//If there is a collision between the two,
+			Collider* colliderOther = other->GetPhysicsModel()->GetCollider();
+			Collision collision = collider->CollidesWith(*colliderOther);
+			if (!collision.collided)
+			{
+				break;
+			}
+			//Cache the second object's aspects that'll be used in the collision response
+			float inverseMassOther = 1 / other->GetPhysicsModel()->GetMass();
+			float restitutionOther = -(1 + other->GetPhysicsModel()->GetRestitution());
+			Vector3 velocityOther = other->GetPhysicsModel()->GetVelocity();
+			Vector3 relativeVelocity = velocity - velocityOther;
+
+			//For each point of contact in the collision...
+			for (Contact* contact : collision.contacts)
+			{
+				//Check the objects are approaching eachother by dotting the relative velocity onto the normal
+				if (contact->normal * relativeVelocity > 0.0f)
+				{
+					break;
+				}
+				//find the total velocity from vt = v0 + v1 + ... + vn
+				float totalVelocity = contact->normal * relativeVelocity;
+				//use it to find the momentum from p = mv
+				float momentum = totalVelocity * (inverseMass + inverseMassOther);
+				//apply an impulse according to the momentum * restitution / mass in the direction opposing the collision
+				gameObject->GetPhysicsModel()->ApplyImpulse(inverseMass * momentum * restitution * contact->normal);
+				other->GetPhysicsModel()->ApplyImpulse(-(inverseMassOther * momentum * restitutionOther * contact->normal));
+			}
+			collision.contacts.clear();
 		}
 	}
-
 }
 
 void Application::HandleInput()
