@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Application.h"
 
 #define NUMBEROFCUBES 2
 ///<summary>The amount of time each frame to be 60 FPS.</summary>
@@ -180,6 +181,7 @@ HRESULT Application::InitWorld()
 	gameObject->GetTransform()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
 	gameObject->GetAppearance()->SetTextureRV(m_groundTextureRV);
 	gameObject->GetPhysicsModel()->EnableGravity(false);
+	gameObject->GetPhysicsModel()->SetCollider(new PlaneCollider(gameObject->GetTransform(), Vector3(0.0f, 1.0f, 0.0f), 0.0f));
 
 	m_gameObjects.push_back(gameObject);
 
@@ -750,6 +752,16 @@ void Application::Update()
 			Vector3 pos1 = m_gameObjects[1]->GetTransform()->GetPosition();
 			Vector3 pos2 = m_gameObjects[2]->GetTransform()->GetPosition();
 			DebugPrintF("1 and 2 collided, with 1 at (%f, %f, %f), and 2 at (%f, %f, %f).\n", pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
+		}
+		//Check for collisions with the ground
+		if (m_gameObjects[0]->GetPhysicsModel()->IsCollidable())
+		{
+			Collider* collider0 = m_gameObjects[0]->GetPhysicsModel()->GetCollider();
+			bool collided = collider1->CollidesWith(*collider0) || collider2->CollidesWith(*collider0);
+			if (collided)
+			{
+				DebugPrintF("An object has collided with the ground.\n");
+			}
 		}
 	}
 

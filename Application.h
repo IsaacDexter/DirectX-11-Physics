@@ -17,6 +17,7 @@
 #include "Debug.h"
 #include "SphereCollider.h"
 #include "AABBCollider.h"
+#include "PlaneCollider.h"
 
 using namespace DirectX;
 
