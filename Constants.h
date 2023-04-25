@@ -12,20 +12,20 @@
 #define LONG_CYLINDER_DRAG_COEFFICIENT 0.82f
 #define SHORT_CYLINDER_DRAG_COEFFICIENT 0.82f
 
-//Surface area of the frontal, plan and elevation cross sections
-#define SPHERE_REFERENCE_AREA Vector3(3.14f, 3.14f, 3.14f)
-#define HALF_SPHERE_REFERENCE_AREA Vector3(3.14f, 1.57f, 1.57f)
-#define CONE_REFERENCE_AREA Vector3(1.57f, 2.0f, 2.0f)
-#define CUBE_REFERENCE_AREA Vector3(4.0f, 4.0f, 4.0f)
-#define ANGLED_CUBE_REFERENCE_AREA Vector3(5.67f, 4.0f, 5.67f)
-#define LONG_CYLINDER_REFERENCE_AREA Vector3(3.14f, 4.0f, 4.0f)
-#define SHORT_CYLINDER_REFERENCE_AREA Vector3(3.14f, 2.0f, 2.0f)
+//Surface area of the frontal, plan and elevation cross sections, for unit shapes
+#define SPHERE_REFERENCE_AREA Vector3(0.785f, 0.785f, 0.785f)
+#define HALF_SPHERE_REFERENCE_AREA Vector3(0.785f, 0.393f, 0.393f)
+#define CONE_REFERENCE_AREA Vector3(0.393f, 1.0f, 1.0f)
+#define CUBE_REFERENCE_AREA Vector3(1.0f, 1.0f, 1.0f)
+#define ANGLED_CUBE_REFERENCE_AREA Vector3(1.414f, 1.0f, 1.414f)
+#define LONG_CYLINDER_REFERENCE_AREA Vector3(0.785f, 1.0f, 1.0f)
+#define SHORT_CYLINDER_REFERENCE_AREA Vector3(0.785f, 0.5f, 0.5f)
 
 //https://en.wikipedia.org/wiki/Density_of_air
 #define AIR_FLUID_DENSITY 1.204f
 
 //https://en.wikipedia.org/wiki/Standard_gravity
-#define EARTH_GRAVITY_ACCELERATION -9.81f
+#define EARTH_GRAVITY_ACCELERATION -0.981f
 
 //https://en.wikipedia.org/wiki/Friction
 #define STEEL_STEEL_STATIC_FRICTION_COEFFICIENT 0.74f

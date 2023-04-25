@@ -400,6 +400,7 @@
     <ClInclude Include="ConstantAccelerationModel.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="ConstantVelocityModel.h" />
+    <ClInclude Include="Contact.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Loaders\DDSTextureLoader.h" />
@@ -408,6 +409,7 @@
     <ClInclude Include="ParticleModel.h" />
     <ClInclude Include="PhysicsModel.h" />
     <ClInclude Include="PlaneCollider.h" />
+    <ClInclude Include="Quaternion.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="RigidBodyModel.h" />
     <ClInclude Include="SphereCollider.h" />

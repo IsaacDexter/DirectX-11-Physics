@@ -67,6 +67,8 @@
     <ClInclude Include="PlaneCollider.h">
       <Filter>Colliders</Filter>
     </ClInclude>
+    <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="Contact.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />

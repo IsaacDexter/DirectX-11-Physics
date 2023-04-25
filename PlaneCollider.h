@@ -18,19 +18,19 @@ public:
     /// <summary>For other collider types, simply call a collision check from that collider</summary>
     /// <param name="other">A collider of unspecified type</param>
     /// <returns>Whether or not the two colliders are overlapping</returns>
-    virtual bool CollidesWith(Collider& other) override;
+    virtual Collision CollidesWith(Collider& other) override;
     /// <summary>Find the distance between the sphere's centre and the plane, and if its less than a radius away, the two collided.</summary>
     /// <param name="other">The other object's AABB collider</param>
     /// <returns>Whether or not the two colliders are overlapping</returns>
-    virtual bool CollidesWith(AABBCollider& other) override;
+    virtual Collision CollidesWith(AABBCollider& other) override;
     /// <summary></summary>
     /// <param name="other">The other object's sphere collider</param>
     /// <returns>whether or not there was a collision</returns>
-    virtual bool CollidesWith(SphereCollider& other) override;
+    virtual Collision CollidesWith(SphereCollider& other) override;
     /// <summary>Checks to see if two planes' normals (and by extension, themselves) are parralell. If they aren't, the two planes overlap at somepoint, as they are infinite.</summary>
     /// <param name="other">The other object's plane collider</param>
     /// <returns>whether or not there was a collision</returns>
-    virtual bool CollidesWith(PlaneCollider& other) override;
+    virtual Collision CollidesWith(PlaneCollider& other) override;
 
     /// <returns>The normal vector of the plane, representing the direction perpendicular to it</returns>
     Vector3 GetNormal() const { return m_normal; };

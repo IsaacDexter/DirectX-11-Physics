@@ -33,21 +33,22 @@ public:
     /// <summary>For other collider types, simply call a collision check from that collider</summary>
     /// <param name="other">A collider of unspecified type</param>
     /// <returns>Whether or not the two colliders are overlapping</returns>
-    virtual bool CollidesWith(Collider& other) override;
+    virtual Collision CollidesWith(Collider& other) override;
     /// <summary>If the distance between the centres of the objects is greater than the sum of half extents in all directions, there has been a collision</summary>
     /// <param name="other">The other object's AABB collider</param>
     /// <returns>Whether or not the two colliders are overlapping</returns>
-    virtual bool CollidesWith(AABBCollider& other) override;
+    virtual Collision CollidesWith(AABBCollider& other) override;
     /// <summary>Finds the distance (squared) between the closest edge of the bounding box and the centre of the circle. If this distance is less than the radius (squared) of the sphere, the objects have collided</summary>
     /// <param name="other">The other object's sphere collider</param>
     /// <returns>whether or not there was a collision</returns>
-    virtual bool CollidesWith(SphereCollider& other) override;
+    virtual Collision CollidesWith(SphereCollider& other) override;
     /// <summary>Performs a closest point operation and returns it for the out vector</summary>
     /// <param name="other">The sphere collider to check for collision with</param>
     /// <param name="out">the closest point, to the collision, regardless of if there was a collision</param>
     /// <returns>whether or not there was a collision</returns>
-    virtual bool CollidesWith(SphereCollider& other, Vector3& out) ;
-    virtual bool CollidesWith(PlaneCollider& other) override;
+    virtual Collision CollidesWith(SphereCollider& other, Vector3& out) ;
+
+    virtual Collision CollidesWith(PlaneCollider& other) override;
 
     /// <returns>The object's centre (the objects position + it's centre offset)</returns>
     Vector3 GetCentre() const { return m_centre + GetPosition(); };

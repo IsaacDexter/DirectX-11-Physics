@@ -1,5 +1,6 @@
 #include "AABBCollider.h"
 #include "SphereCollider.h"
+#include "PlaneCollider.h"
 
 AABBCollider::AABBCollider(Transform* transform, Vector3 halfExtents) : Collider(transform)
 {
@@ -25,48 +26,80 @@ AABBCollider::AABBCollider(Transform* transform, float dx, float dy, float dz, f
 	m_centre = Vector3(dx, dy, dz);
 }
 
-bool AABBCollider::CollidesWith(Collider& other)
+Collision AABBCollider::CollidesWith(Collider& other)
 {
-	//return false;
+	//pass to the other collider;
 	return other.CollidesWith(*this);
 }
 
-bool AABBCollider::CollidesWith(AABBCollider& other)
+Collision AABBCollider::CollidesWith(AABBCollider& other)
 {
+	Collision collision;
 	if (abs(GetCentre().x - other.GetCentre().x) > (m_halfExtents.x + other.GetHalfExtents().x))	//If we aren't not overlapping on the x
 	{
-		return false;
+		return collision;
 	}
 	if (abs(GetCentre().y - other.GetCentre().y) > (m_halfExtents.y + other.GetHalfExtents().y))	//or y
 	{
-		return false;
+		return collision;
 	}
 	if (abs(GetCentre().z - other.GetCentre().z) > (m_halfExtents.z + other.GetHalfExtents().z))	//or z
 	{
-		return false;
+		return collision;
 	}
-	return true;	//there's been an overlap
+	//there's been an overlap
+	collision.collided = true;
+	//calculate contacts here:
+
+	//return
+	return collision;
 }
 
-bool AABBCollider::CollidesWith(SphereCollider& other)
+Collision AABBCollider::CollidesWith(SphereCollider& other)
 {
+	Collision collision;
 	float distanceSq = DistanceSq(other.GetPosition());
-	return distanceSq <= other.GetRadiusSq();
+	if (distanceSq <= other.GetRadiusSq())
+	{
+		//There has been a collision
+		collision.collided = true;
+		//determine contacts here:
+
+	}
+	return collision;
 }
 
-bool AABBCollider::CollidesWith(SphereCollider& other, Vector3& out)
+Collision AABBCollider::CollidesWith(SphereCollider& other, Vector3& out)
 {
 	//Find the closest point on this box to the centre of the sphere
 	out = ClosestPoint(other.GetPosition());
 
 	//The sphere intersects with this box if the squared distance from the sphere's centre to the closest point is less than the squared sphere radius
 	float distanceSq = (out - other.GetPosition()).MagnitudeSq();
-	return distanceSq <= other.GetRadiusSq();
+	return Collision(distanceSq <= other.GetRadiusSq());
 }
 
-bool AABBCollider::CollidesWith(PlaneCollider& other)
+Collision AABBCollider::CollidesWith(PlaneCollider& other)
 {
-	return false;
+	Collision collision;
+	//Calculate the projection interval radius of the box onto a line parallel to the normal that goes through the box's centre
+	//Line L = box's centre + t * plane's normal, where the box's centre projects onto L when t = 0, and L || plane's normal.
+	//L = b.c + t * p.n
+	//Projection interval radius
+	//dot product of the box's half extents and the absolute of the plane's normal
+	float projectionIntervalRadius = m_halfExtents * abs(other.GetNormal());
+	//Distance between box's centre and plane
+	//dot product of box's centre and planes normal - plane's distance from origin
+	float centreDistance = (m_centre * other.GetNormal()) - other.GetDistance();
+	//If the distance, s, falls within the projection interval radius, r, there's been a collision
+	if (abs(centreDistance) <= projectionIntervalRadius)
+	{
+		//If there's been a collision,
+		collision.collided = true;
+		// calculate contact points:
+
+	}
+	return collision;
 }
 
 float AABBCollider::DistanceSq(Vector3 p)

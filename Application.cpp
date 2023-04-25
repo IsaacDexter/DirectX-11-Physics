@@ -706,7 +706,7 @@ void Application::moveBackward(int objectNumber)
 
 void Application::moveUp(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 10.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 1.0f, 0.0f);
 }
 
 void Application::moveDown(int objectNumber)
@@ -731,38 +731,15 @@ void Application::Update()
     // Update our time
 	static float accumulator = 0.0f;
 	accumulator += m_timer->GetDeltaTime();
-	string deltaTime = to_string(accumulator);
 
 	while (accumulator >= FPS60)
 	{
 		HandleInput();
 		UpdateWorld(FPS60);
+		HandleCollisions(FPS60);
+		//DebugPrintF("Accumulator: %f\n", accumulator);
+		m_timer->Tick();
 		accumulator -= FPS60;
-	m_timer->Tick();
-	}
-
-	//Check for collisions between spheres
-	if (m_gameObjects[1]->GetPhysicsModel()->IsCollidable() && m_gameObjects[2]->GetPhysicsModel()->IsCollidable())
-	{
-		Collider* collider1 = m_gameObjects[1]->GetPhysicsModel()->GetCollider();
-		Collider* collider2 = m_gameObjects[2]->GetPhysicsModel()->GetCollider();
-		bool collided = collider1->CollidesWith(*collider2);
-		if (collided)
-		{
-			Vector3 pos1 = m_gameObjects[1]->GetTransform()->GetPosition();
-			Vector3 pos2 = m_gameObjects[2]->GetTransform()->GetPosition();
-			DebugPrintF("1 and 2 collided, with 1 at (%f, %f, %f), and 2 at (%f, %f, %f).\n", pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
-		}
-		//Check for collisions with the ground
-		if (m_gameObjects[0]->GetPhysicsModel()->IsCollidable())
-		{
-			Collider* collider0 = m_gameObjects[0]->GetPhysicsModel()->GetCollider();
-			bool collided = collider1->CollidesWith(*collider0) || collider2->CollidesWith(*collider0);
-			if (collided)
-			{
-				DebugPrintF("An object has collided with the ground.\n");
-			}
-		}
 	}
 
 }
@@ -786,6 +763,35 @@ void Application::UpdateWorld(float dt)
 	for (auto gameObject : m_gameObjects)
 	{
 		gameObject->Update(dt);
+	}
+}
+
+void Application::HandleCollisions(float dt)
+{
+	//Check for collisions between spheres
+	if (m_gameObjects[1]->GetPhysicsModel()->IsCollidable() && m_gameObjects[2]->GetPhysicsModel()->IsCollidable())
+	{
+		Collider* collider1 = m_gameObjects[1]->GetPhysicsModel()->GetCollider();
+		Collider* collider2 = m_gameObjects[2]->GetPhysicsModel()->GetCollider();
+		bool collided = collider1->CollidesWith(*collider2);
+		if (collided)
+		{
+			m_gameObjects[1]->GetPhysicsModel()->ApplyImpulse(Vector3(1.0f, 0.0f, 0.0f));
+			m_gameObjects[2]->GetPhysicsModel()->ApplyImpulse(Vector3(-1.0f, 0.0f, 0.0f));
+		}
+		//Check for collisions with the ground
+		if (m_gameObjects[0]->GetPhysicsModel()->IsCollidable())
+		{
+			Collider* collider0 = m_gameObjects[0]->GetPhysicsModel()->GetCollider();
+			if (collider1->CollidesWith(*collider0))
+			{
+				m_gameObjects[1]->GetPhysicsModel()->ApplyImpulse(Vector3(0.0f, 0.0f, 0.0f));
+			}
+			if (collider2->CollidesWith(*collider0))
+			{
+				m_gameObjects[2]->GetPhysicsModel()->ApplyImpulse(Vector3(0.0f, 0.0f, 0.0f));
+			}
+		}
 	}
 }
 

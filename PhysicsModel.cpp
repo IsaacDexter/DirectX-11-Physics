@@ -92,11 +92,15 @@ void PhysicsModel::ApplyDrag()
 {
 	if (m_fluidDensity > 0.0f && m_velocity.MagnitudeSq() > 0.0f)	//if we are in a fluid that applies drag (i.e. this is set to 0 for objects that feel no air resistance.)
 	{
-		m_dragForceMagnitude = 0.5f * m_fluidDensity * m_dragCoefficient * m_referenceArea.x * m_velocity.MagnitudeSq();	//|Fd| = 0.5 * rho * Cd * A * |V|^2
-		Vector3 dragForce = m_velocity.Normalized() * -1;	//Find the direction against movement
+		Vector3 direction = m_velocity.Normalized();
+		//Calculate how much area is being moved against it, remembering that area is a vector3, simply get the dot product of the direction and the areas to get the combined area for the direction being moved in
+		float referenceArea = abs(direction) * m_referenceArea;
+		DebugPrintF("Reference Area = ( %f )\n", referenceArea);
+		m_dragForceMagnitude = 0.5f * m_fluidDensity * m_dragCoefficient * referenceArea * m_velocity.MagnitudeSq();	//|Fd| = 0.5 * rho * Cd * A * |V|^2
+		Vector3 dragForce = direction * -1;	//Find the direction against movement
 		dragForce *= m_dragForceMagnitude;	//multiply this direction by the dragnitude (drag magnitude lol)
 		AddForce(dragForce);
-		//DebugPrintF("Drag Force = ( %f , %f , %f )\n", dragForce.x, dragForce.y, dragForce.z);
+		DebugPrintF("Drag Force = ( %f , %f , %f )\n", dragForce.x, dragForce.y, dragForce.z);
 	}
 }
 
@@ -112,4 +116,9 @@ void PhysicsModel::ApplyFriction()
 		AddForce(frictionForce);
 		//DebugPrintF("Friction Force = ( %f , %f , %f )\n", frictionForce.x, frictionForce.y, frictionForce.z);
 	}
+}
+
+void PhysicsModel::ApplyImpulse(Vector3 impulse)
+{
+	m_velocity += impulse;
 }

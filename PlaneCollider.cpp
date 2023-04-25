@@ -15,7 +15,7 @@ PlaneCollider::PlaneCollider(Transform* transform, Vector3 normal, Vector3 point
     m_distance = CalculateDistanceFromPoint(point);
 }
 
-bool PlaneCollider::CollidesWith(Collider& other)
+Collision PlaneCollider::CollidesWith(Collider& other)
 {
     return other.CollidesWith(*this);
 }
@@ -43,8 +43,9 @@ bool PlaneCollider::CollidesWith(Collider& other)
 //    return abs(s) <= r;
 //}
 
-bool PlaneCollider::CollidesWith(AABBCollider& other)
+Collision PlaneCollider::CollidesWith(AABBCollider& other)
 {
+    Collision collision;
     //Calculate the projection interval radius of the box onto a line parallel to the normal that goes through the box's centre
     //Line L = box's centre + t * plane's normal, where the box's centre projects onto L when t = 0, and L || plane's normal.
     //L = b.c + t * p.n
@@ -55,21 +56,44 @@ bool PlaneCollider::CollidesWith(AABBCollider& other)
     //dot product of box's centre and planes normal - plane's distance from origin
     float centreDistance = (other.GetCentre() * m_normal) - m_distance;
     //If the distance, s, falls within the projection interval radius, r, there's been a collision
-    return abs(centreDistance) <= projectionIntervalRadius;
+    if (abs(centreDistance) <= projectionIntervalRadius)
+    {
+        //if theres been a collision,
+        collision.collided = true;
+        //Calculate contact points:
+
+    }
+    return collision;
 }
 
-bool PlaneCollider::CollidesWith(SphereCollider& other)
+Collision PlaneCollider::CollidesWith(SphereCollider& other)
 {
+    Collision collision;
     //Find the distance between the centre of the sphere and the plane with (s.c dot n) and subtracting m_distance
     float distance = (other.GetPosition() * m_normal) - m_distance;
     //if this distance is within +- a radius' distance from the plane, the two intersect
-    return abs(distance) <= other.GetRadius();
+    if (abs(distance) <= other.GetRadius())
+    {
+        //if theres been a collision,
+        collision.collided = true;
+        //Calculate contact points:
+
+    }
+    return collision;
 }
 
-bool PlaneCollider::CollidesWith(PlaneCollider& other)
+Collision PlaneCollider::CollidesWith(PlaneCollider& other)
 {
+    Collision collision;
     //Find the cross product between the two normals. If it's not the zero vector, they are not parralel and will collide
-    return (m_normal ^ other.GetNormal()) != Vector3();
+    if((m_normal ^ other.GetNormal()) != Vector3())
+    {
+        //if theres been a collision,
+        collision.collided = true;
+        //Calculate contact points:
+
+    }
+    return collision;
 }
 
 float PlaneCollider::CalculateDistanceFromPoint(Vector3 point) const

@@ -111,6 +111,7 @@ private:
 	HRESULT InitIndexBuffer();
 
 	void UpdateWorld(float dt);
+	void HandleCollisions(float dt);
 	void HandleInput();
 
 	void moveForward(int objectNumber);

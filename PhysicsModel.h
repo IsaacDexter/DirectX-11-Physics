@@ -23,6 +23,14 @@ public:	//Public Methods
 	/// <param name="z">The force to be added in the z direction, in N</param>
 	void AddForce(float x, float y, float z) { m_netforce += Vector3(x, y, z); };
 
+#pragma region ImpulseForces
+
+	/// <summary>Applys a force over a given time of one tick as a vector</summary>
+	/// <param name="impulse">The force to apply, in Ns</param>
+	void ApplyImpulse(Vector3 impulse);
+
+#pragma endregion
+
 #pragma region SettersAndGetters
 
 	/// <returns>if this model has a collider set</returns>
@@ -79,6 +87,8 @@ public:	//Public Methods
 	Vector3 GetReferenceArea() const { return m_referenceArea; };
 
 #pragma endregion
+
+
 
 protected:	//Protected Methods
 
