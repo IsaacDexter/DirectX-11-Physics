@@ -19,6 +19,7 @@
 #include "AABBCollider.h"
 #include "PlaneCollider.h"
 #include "Contact.h"
+#include "StaticModel.h"
 
 using namespace DirectX;
 

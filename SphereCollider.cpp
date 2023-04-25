@@ -57,15 +57,26 @@ Collision SphereCollider::CollidesWith(AABBCollider& other)
 Collision SphereCollider::CollidesWith(PlaneCollider& other)
 {
 	Collision collision;
+	Vector3 position = other.GetPosition();
+	Vector3 normalOther = other.GetNormal();
+	float distanceOther = other.GetDistance();
 	//Find the distance between the centre of the sphere and the plane with (s.c dot n) and subtracting m_distance
-	float distance = (GetPosition() * other.GetNormal() ) - other.GetDistance();
+	float distance = (position * normalOther) - distanceOther;
 	//if this distance is within +- a radius' distance from the plane, the two intersect
 	if (abs(distance) <= m_radius)
 	{
 		//if theres been a collision,
 		collision.collided = true;
 		//Calculate contact points:
-
+		Contact* contact = new Contact();
+		//the plane only has one face so the normal will always be the plane's
+		contact->normal = normalOther;
+		//The sphere has definitely intersected, so the distance from the plane will be the amount intersected, as its distance from the other side.
+		contact->penetration = -distance;
+		//Get the point of collision along the line of the normal from the position
+		contact->point = position - normalOther * (distance + m_radius);
+		//write this contact to the collision
+		collision.contacts.push_back(contact);
 	}
 	return collision;
 }

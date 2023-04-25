@@ -11,7 +11,8 @@ public:	//Public Methods
 	/// <param name="transform">The a pointer to the transform object, which is used to apply these forces</param>
 	/// <param name="mass">The object's mass, in kg. Defaults to 1 kg</param>
 	/// <param name="restitution">The object's coefficient restitution, from 0 - 1, where 0 is an inelastic object and 1 is a perfectly elastic one</param>
-	PhysicsModel(Transform* transform, float mass, float restitution);
+	PhysicsModel(Transform* transform, float mass = 1.0f, float restitution = 0.5f);
+	~PhysicsModel();
 
 	/// <summary>Calculates the object's acceleration, velocity and displacement from the forces applied to it; Appliest the displacement; Resets acceleration and force</summary>
 	/// <param name="dt">The change in time since last frame</param>

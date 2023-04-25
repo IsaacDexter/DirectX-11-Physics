@@ -1,8 +1,8 @@
 #include "GameObject.h"
 
-GameObject::GameObject(string type, Appearance* appearance, Transform* transform) : m_type(type), m_appearance(appearance), m_transform(transform)
+GameObject::GameObject(string type, Appearance* appearance, Transform* transform, PhysicsModel* physicsModel) : m_type(type), m_appearance(appearance), m_transform(transform), m_physicsModel(physicsModel)
 {
-	m_physicsModel = new RigidBodyModel(m_transform, 1.0f, 0.5f);
+
 }
 
 GameObject::~GameObject()

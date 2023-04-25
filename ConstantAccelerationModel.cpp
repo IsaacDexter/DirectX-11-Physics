@@ -1,6 +1,6 @@
 #include "ConstantAccelerationModel.h"
 
-ConstantAccelerationModel::ConstantAccelerationModel(Transform* transform, float mass = 1.0f, float restitution = 0.5f) :PhysicsModel(transform, mass, restitution)
+ConstantAccelerationModel::ConstantAccelerationModel(Transform* transform, float mass, float restitution) :PhysicsModel(transform, mass, restitution)
 {
 
 }

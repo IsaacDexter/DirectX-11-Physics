@@ -175,7 +175,8 @@ HRESULT Application::InitWorld()
 	noSpecMaterial.specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	noSpecMaterial.specularPower = 0.0f;
 
-	GameObject* gameObject = new GameObject("Floor", new Appearance(planeGeometry, noSpecMaterial), new Transform);
+	Transform* transform = new Transform();
+	GameObject* gameObject = new GameObject("Floor", new Appearance(planeGeometry, noSpecMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.5f));
 	gameObject->GetTransform()->SetPosition(0.0f, 0.0f, 0.0f);
 	gameObject->GetTransform()->SetScale(15.0f, 15.0f, 15.0f);
 	gameObject->GetTransform()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
@@ -187,7 +188,8 @@ HRESULT Application::InitWorld()
 
 	for (auto i = 0; i < NUMBEROFCUBES; i++)
 	{
-		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), new Transform);
+		transform = new Transform();
+		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.5f));
 		gameObject->GetTransform()->SetPosition(-3.0f + (i * 2.5f), 1.0f, 10.0f);
 		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 		gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
@@ -197,9 +199,9 @@ HRESULT Application::InitWorld()
 
 		m_gameObjects.push_back(gameObject);
 	}
-	gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
 
-	gameObject = new GameObject("Donut", new Appearance(donutGeometry, shinyMaterial), new Transform);
+	transform = new Transform();
+	gameObject = new GameObject("Donut", new Appearance(donutGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.5f));
 	gameObject->GetTransform()->SetPosition(-6.0f, 0.5f, 10.0f);
 	gameObject->GetTransform()->SetScale(0.5f, 0.5f, 0.5f);
 	gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
