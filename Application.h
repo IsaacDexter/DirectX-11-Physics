@@ -18,6 +18,7 @@
 #include "SphereCollider.h"
 #include "AABBCollider.h"
 #include "PlaneCollider.h"
+#include "Contact.h"
 
 using namespace DirectX;
 

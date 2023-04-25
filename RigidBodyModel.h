@@ -7,7 +7,7 @@ class RigidBodyModel:
 	public PhysicsModel
 {
 public:
-	RigidBodyModel(Transform* transform, float mass);
+	RigidBodyModel(Transform* transform, float mass, float restitution);
 	virtual void Update(float dt);
 };
 

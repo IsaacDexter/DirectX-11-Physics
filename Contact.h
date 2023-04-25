@@ -8,15 +8,15 @@
 struct Contact
 {
 	/// <summary>The world position of the contact.</summary>
-	Vector3 contactPoint;
+	Vector3 point;
 	/// <summary>The direction of the contact in world coordinates.</summary>
-	Vector3 contactNormal;
+	Vector3 normal;
 	/// <summary>The depth of penetration at the contact point. If both bodies are specifeid then the contact point should be midway between the interpenetrating points</summary>
 	float penetration;
 	Contact()
 	{
-		contactPoint = Vector3();
-		contactNormal = Vector3();
+		point = Vector3();
+		normal = Vector3();
 		penetration = 0.0f;
 	}
 	/// <summary><para>point-face: Point–face contacts are the most common and important type of contact. 
@@ -33,8 +33,8 @@ struct Contact
 	/// <para>edge-edge: The penetration depth is the distance between the two edges.</para></param>
 	Contact(Vector3 contactPoint, Vector3 contactNormal, float penetration)
 	{
-		this->contactPoint = contactPoint;
-		this->contactNormal = contactPoint;
+		this->point = contactPoint;
+		this->normal = contactPoint;
 		this->penetration = penetration;
 	}
 };
@@ -43,20 +43,28 @@ struct Contact
 struct Collision
 {
 	bool collided;
-	std::vector<Contact> contacts;
+	std::vector<Contact*> contacts;
 	Collision()
 	{
 		collided = false;
-		contacts = std::vector<Contact>();
+		contacts = std::vector<Contact*>();
 	}
 	Collision(bool collision)
 	{
 		this->collided = collided;
-		contacts = std::vector<Contact>();
+		contacts = std::vector<Contact*>();
 	}
-	Collision(bool collision, std::vector<Contact> contacts)
+	Collision(bool collision, std::vector<Contact*> contacts)
 	{
 		this->collided = collided;
 		this->contacts = contacts;
+	}
+	~Collision()
+	{
+		for (Contact* contact : contacts)
+		{
+			delete contact;
+		}
+		contacts.clear();
 	}
 };

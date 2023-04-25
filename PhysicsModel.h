@@ -10,7 +10,8 @@ class PhysicsModel
 public:	//Public Methods
 	/// <param name="transform">The a pointer to the transform object, which is used to apply these forces</param>
 	/// <param name="mass">The object's mass, in kg. Defaults to 1 kg</param>
-	PhysicsModel(Transform* transform, float mass);
+	/// <param name="restitution">The object's coefficient restitution, from 0 - 1, where 0 is an inelastic object and 1 is a perfectly elastic one</param>
+	PhysicsModel(Transform* transform, float mass, float restitution);
 
 	/// <summary>Calculates the object's acceleration, velocity and displacement from the forces applied to it; Appliest the displacement; Resets acceleration and force</summary>
 	/// <param name="dt">The change in time since last frame</param>
@@ -63,6 +64,11 @@ public:	//Public Methods
 	void SetMass(float mass) { m_mass = mass; CalculateWeight(); };
 	/// <returns>The object's mass, in kg</returns>
 	float GetMass() const { return m_mass; };
+	
+	/// <param name="restitution">The object's coefficient restitution, from 0 - 1, where 0 is an inelastic object and 1 is a perfectly elastic one</param>
+	void SetRestitution(float restitution) { m_restitution = restitution; };
+	/// <returns>The object's coefficient restitution, from 0 - 1, where 0 is an inelastic object and 1 is a perfectly elastic one</returns>
+	float GetRestitution() const { return m_restitution; };
 	
 	/// <param name="g">Acceleration due to gravity, in m/s. A negative value will act downwards.</param>
 	void SetGravityAcceleration(float g) { m_gravityAcceleration = g; CalculateWeight(); };
@@ -139,6 +145,8 @@ protected:	//Protected Variables
 	Vector3 m_netforce;
 	/// <summary>The object's mass, in kg</summary>
 	float m_mass;
+	/// <summary>The object's coefficient restitution, from 0 - 1, where 0 is an inelastic object and 1 is a perfectly elastic one</summary>
+	float m_restitution;
 
 	/// <summary>The acceleration due to gravity, in m/s. Default value from https://en.wikipedia.org/wiki/Gravity_of_Earth</summary>
 	float m_gravityAcceleration = EARTH_GRAVITY_ACCELERATION;

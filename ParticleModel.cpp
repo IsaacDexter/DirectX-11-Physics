@@ -1,6 +1,6 @@
 #include "ParticleModel.h"
 
-ParticleModel::ParticleModel(Transform* transform, float mass = 1.0f):PhysicsModel(transform, mass)
+ParticleModel::ParticleModel(Transform* transform, float mass = 1.0f, float restitution = 0.5f):PhysicsModel(transform, mass, restitution)
 {
 	
 }

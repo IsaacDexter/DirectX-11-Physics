@@ -6,7 +6,7 @@ class ParticleModel :
     public PhysicsModel
 {
 public:
-    ParticleModel(Transform* transform, float mass);
+    ParticleModel(Transform* transform, float mass, float restitution);
     virtual void Update(float dt) override;
 };
 

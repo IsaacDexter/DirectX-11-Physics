@@ -2,11 +2,12 @@
 #include "Debug.h"
 #include <string>
 
-PhysicsModel::PhysicsModel(Transform* transform, float mass = 1.0f)
+PhysicsModel::PhysicsModel(Transform* transform, float mass = 1.0f, float restitution = 0.5f)
 {
 	m_transform = transform;
 	m_collider = nullptr;
 	m_mass = mass;
+	m_restitution = restitution;
 	CalculateWeight();
 
 	m_referenceArea *= m_transform->GetScale();

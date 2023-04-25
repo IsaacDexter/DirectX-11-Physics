@@ -192,8 +192,8 @@ HRESULT Application::InitWorld()
 		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 		gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
 		gameObject->GetPhysicsModel()->EnableGravity(true);
-		gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
-		//gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
+		//gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
+		gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
 
 		m_gameObjects.push_back(gameObject);
 	}
@@ -766,33 +766,94 @@ void Application::UpdateWorld(float dt)
 	}
 }
 
+//void Application::HandleCollisions(float dt)
+//{
+//	for (GameObject* gameObject : m_gameObjects)	//For each object
+//	{
+//		if (!gameObject->GetPhysicsModel()->IsCollidable())
+//		{
+//			break;
+//		}
+//		//Cache the object's
+//		//inverse mass
+//		float inverseMass = 1 / gameObject->GetPhysicsModel()->GetMass();
+//		//restitution
+//		float resitution = gameObject->GetPhysicsModel()->GetRestitution();
+//		//collider
+//		Collider* collider = gameObject->GetPhysicsModel()->GetCollider();
+//		//velocity
+//		Vector3 velocity = gameObject->GetPhysicsModel()->GetVelocity();
+//		for (GameObject* other : m_gameObjects)	//For each other object
+//		{
+//			if (gameObject == other)	//assuming they aren't the same...
+//			{
+//				break;
+//			}
+//			if (!other->GetPhysicsModel()->IsCollidable())
+//			{
+//				break;
+//			}
+//
+//			//Log a collision between the two objects
+//			Collider* colliderOther = other->GetPhysicsModel()->GetCollider();
+//			Collision collision = collider->CollidesWith(*colliderOther);
+//			if (!collision.collided)
+//			{
+//				break;
+//			}
+//
+//			float inverseMassOther = 1 / other->GetPhysicsModel()->GetMass();
+//			float resitutionOther = other->GetPhysicsModel()->GetRestitution();
+//			Vector3 velocityOther = other->GetPhysicsModel()->GetVelocity();
+//
+//			Vector3 relativeVelocity = velocity - velocityOther;
+//
+//			//For each point of contact in the collision
+//			for (Contact* contact : collision.contacts)
+//			{
+//				//assuming the objects are approaching eachother...
+//				if (contact->normal * relativeVelocity > 0.0f)
+//				{
+//					break;
+//				}
+//				float totalVelocity = -(1 + resitution * resitutionOther) * (contact->normal * relativeVelocity);
+//				float momentum = totalVelocity * (inverseMass + inverseMassOther);
+//				gameObject->GetPhysicsModel()->ApplyImpulse(inverseMass * momentum * contact->normal);
+//				other->GetPhysicsModel()->ApplyImpulse(-(inverseMassOther * momentum * contact->normal));
+//			}
+//			collision.contacts.clear();
+//		}
+//	}
+//}
+
 void Application::HandleCollisions(float dt)
 {
-	//Check for collisions between spheres
-	if (m_gameObjects[1]->GetPhysicsModel()->IsCollidable() && m_gameObjects[2]->GetPhysicsModel()->IsCollidable())
+	GameObject* object1 = m_gameObjects[1];
+	GameObject* object2 = m_gameObjects[2];
+	if (object1->GetPhysicsModel()->IsCollidable() && object2->GetPhysicsModel()->IsCollidable())
 	{
 		Collider* collider1 = m_gameObjects[1]->GetPhysicsModel()->GetCollider();
 		Collider* collider2 = m_gameObjects[2]->GetPhysicsModel()->GetCollider();
-		bool collided = collider1->CollidesWith(*collider2);
-		if (collided)
+		Collision collision = collider1->CollidesWith(*collider2);
+		if (collision.collided)
 		{
-			m_gameObjects[1]->GetPhysicsModel()->ApplyImpulse(Vector3(1.0f, 0.0f, 0.0f));
-			m_gameObjects[2]->GetPhysicsModel()->ApplyImpulse(Vector3(-1.0f, 0.0f, 0.0f));
-		}
-		//Check for collisions with the ground
-		if (m_gameObjects[0]->GetPhysicsModel()->IsCollidable())
-		{
-			Collider* collider0 = m_gameObjects[0]->GetPhysicsModel()->GetCollider();
-			if (collider1->CollidesWith(*collider0))
+			Vector3 collisionNormal = (object1->GetTransform()->GetPosition() - object2->GetTransform()->GetPosition()).Normalized();
+			float restitution = 0.5f;
+			Vector3 relativeVelocity = object1->GetPhysicsModel()->GetVelocity() - object2->GetPhysicsModel()->GetVelocity();
+			float inverseMass1 = 1 / object1->GetPhysicsModel()->GetMass();
+			float inverseMass2 = 1 / object2->GetPhysicsModel()->GetMass();
+
+			if (collisionNormal * relativeVelocity < 0.0f)
 			{
-				m_gameObjects[1]->GetPhysicsModel()->ApplyImpulse(Vector3(0.0f, 0.0f, 0.0f));
+				float totalVelocity = -(1 + restitution) * (collisionNormal * relativeVelocity);
+				float momentum = totalVelocity * (inverseMass1 + inverseMass2);
+				object1->GetPhysicsModel()->ApplyImpulse(inverseMass1 * momentum * collisionNormal);
+				object2->GetPhysicsModel()->ApplyImpulse(-(inverseMass2 * momentum * collisionNormal));
 			}
-			if (collider2->CollidesWith(*collider0))
-			{
-				m_gameObjects[2]->GetPhysicsModel()->ApplyImpulse(Vector3(0.0f, 0.0f, 0.0f));
-			}
+
 		}
 	}
+
 }
 
 void Application::HandleInput()

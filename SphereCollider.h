@@ -15,13 +15,13 @@ public:
 	/// <summary>Simply get the other collider to collide with this, as each handles sphere differently</summary>
 	/// <param name="other">The object this object is colliding with</param>
 	/// <returns>Whether or not the objects have collided, true for a collision</returns>
-	virtual bool CollidesWith(Collider& other) override;
+	virtual Collision CollidesWith(Collider& other) override;
 	/// <summary>Finds the squared distance between this and the other sphere, and compare it to the squared sum between the two radii</summary>
 	/// <param name="other">The object this object is colliding with</param>
 	/// <returns>Whether or not the objects have collided, true for a collision</returns>
-	virtual bool CollidesWith(SphereCollider& other) override;
-	virtual bool CollidesWith(AABBCollider& other) override;
-	virtual bool CollidesWith(PlaneCollider& other) override;
+	virtual Collision CollidesWith(SphereCollider& other) override;
+	virtual Collision CollidesWith(AABBCollider& other) override;
+	virtual Collision CollidesWith(PlaneCollider& other) override;
 
 	/// <returns>The radius, in m, of the sphere modelled</returns>
 	float GetRadius() const { return m_radius; };
