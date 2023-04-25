@@ -214,3 +214,8 @@ inline float TripleScalarProduct(Vector3 u, Vector3 v, Vector3 w)
         (u.y * (-v.x * w.z + v.z * w.x)) +
         (u.z * (v.x * w.y - v.y * w.x)));
 }
+
+inline Vector3 abs(Vector3 u)
+{
+    return Vector3(abs(u.x), abs(u.y), abs(u.z));
+}

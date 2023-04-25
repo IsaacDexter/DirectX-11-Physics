@@ -64,7 +64,9 @@
     <ClInclude Include="AABBCollider.h">
       <Filter>Colliders</Filter>
     </ClInclude>
-    <ClInclude Include="PlaneCollider.h" />
+    <ClInclude Include="PlaneCollider.h">
+      <Filter>Colliders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -105,7 +107,9 @@
     <ClCompile Include="AABBCollider.cpp">
       <Filter>Colliders</Filter>
     </ClCompile>
-    <ClCompile Include="PlaneCollider.cpp" />
+    <ClCompile Include="PlaneCollider.cpp">
+      <Filter>Colliders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

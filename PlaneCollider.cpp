@@ -20,9 +20,42 @@ bool PlaneCollider::CollidesWith(Collider& other)
     return other.CollidesWith(*this);
 }
 
+//bool PlaneCollider::CollidesWith(AABBCollider& other)
+//{
+//    //box's centre
+//    Vector3 c = other.GetCentre();
+//    //box's extents
+//    Vector3 e = other.GetHalfExtents();
+//    //plane's normal
+//    Vector3 n = m_normal;
+//    //plane's distance from normal
+//    float d = m_distance;
+//    //Calculate the projection interval radius of the box onto a line parallel to the normal that goes through the box's centre
+//    //Line L = box's centre + t * plane's normal, where the box's centre projects onto L when t = 0, and L || plane's normal.
+//    //L = b.c + t * p.n
+//    //Projection interval radius
+//    //dot product of the box's half extents and the absolute of the plane's normal
+//    float r = e * abs(n);
+//    //Distance between box's centre and plane
+//    //dot product of box's centre and planes normal - plane's distance from origin
+//    float s = c * n - d;
+//    //If the distance, s, falls within the projection interval radius, r, there's been a collision
+//    return abs(s) <= r;
+//}
+
 bool PlaneCollider::CollidesWith(AABBCollider& other)
 {
-    return false;
+    //Calculate the projection interval radius of the box onto a line parallel to the normal that goes through the box's centre
+    //Line L = box's centre + t * plane's normal, where the box's centre projects onto L when t = 0, and L || plane's normal.
+    //L = b.c + t * p.n
+    //Projection interval radius
+    //dot product of the box's half extents and the absolute of the plane's normal
+    float projectionIntervalRadius = other.GetHalfExtents() * abs(m_normal);
+    //Distance between box's centre and plane
+    //dot product of box's centre and planes normal - plane's distance from origin
+    float centreDistance = (other.GetCentre() * m_normal) - m_distance;
+    //If the distance, s, falls within the projection interval radius, r, there's been a collision
+    return abs(centreDistance) <= projectionIntervalRadius;
 }
 
 bool PlaneCollider::CollidesWith(SphereCollider& other)
