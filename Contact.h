@@ -59,12 +59,4 @@ struct Collision
 		this->collided = collided;
 		this->contacts = contacts;
 	}
-	~Collision()
-	{
-		for (Contact* contact : contacts)
-		{
-			delete contact;
-		}
-		contacts.clear();
-	}
 };
