@@ -93,6 +93,14 @@ public:
     /// <returns>A point on this AABB that is closest to the p</returns>
     Vector3 ClosestPoint(Vector3 point);
 
+    Vector3 GetXAxis() const { return Vector3(1.0f, 0.0f, 0.0f); };
+    Vector3 GetYAxis() const { return Vector3(0.0f, 1.0f, 0.0f); };
+    Vector3 GetZAxis() const { return Vector3(0.0f, 0.0f, 1.0f); };
+
+    float TransformToAxis(const Vector3& axis);
+
+    bool overlapOnAxis(AABBCollider& other, const Vector3& axis);
+
 #pragma endregion
 
 

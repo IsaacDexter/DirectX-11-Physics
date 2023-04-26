@@ -51,6 +51,69 @@ Collision AABBCollider::CollidesWith(AABBCollider& other)
 	//there's been an overlap
 	collision.collided = true;
 	//calculate contacts here:
+	//point-point and point-edge contacts as a mere 60th of a second later, a better version of the collision will come about
+	// 1. Perform seperating axes theorem to test for an earlier out
+	// 2. perform the full collision detection and contact resolution to get a single detected contact between the two boxes
+	// 3. combine the new contact previously detected contacts between the two boxes to form a complete set of contacts
+
+	//for each vertex on the other cube
+	for (Vector3 vertex : other.GetVertices())
+	{
+		//Transform the vertex into local space
+		Vector3 relativeVertex = vertex - GetCentre();
+		
+		Vector3 normal;
+		//Check each axis, looking gor the axis with the least penetration
+		// 
+		//x:
+		float minDepth = m_halfExtents.x - abs(relativeVertex.x);
+		if (minDepth < 0)
+		{
+			continue;
+		}
+		//get the normal, the latter part makes sure the normal is pointing in the direction towards the point
+		normal = GetXAxis() * ((relativeVertex.x < 0) ? -1 : 1);
+
+		//y:
+		float depth = m_halfExtents.y - abs(relativeVertex.y);
+		if (depth < 0)
+		{
+			continue;
+		}
+		//if this depth is less than the minimum depth
+		else if (depth < minDepth && depth != 0.0f)
+		{
+			//update it, and the normal
+			minDepth = depth;
+			normal = GetYAxis() * ((relativeVertex.y < 0) ? -1 : 1);
+		}
+		
+		//z
+		depth = m_halfExtents.z - abs(relativeVertex.z);
+		if (depth < 0)
+		{
+			continue;
+		}
+		//if this depth is less than the minimum depth
+		else if (depth < minDepth && depth != 0.0f)
+		{
+			//update it, and the normal
+			minDepth = depth;
+			normal = GetZAxis() * ((relativeVertex.z < 0) ? -1 : 1);
+		}
+
+		//write the contact
+		Contact* contact = new Contact();
+		contact->normal = normal;
+		contact->point = vertex;
+		contact->penetration = minDepth;
+
+		DebugPrintF("contact.point = (%f, %f, %f)\n", contact->point.x, contact->point.y, contact->point.z);
+		DebugPrintF("contact.normal = (%f, %f, %f)\n", contact->normal.x, contact->normal.y, contact->normal.z);
+		DebugPrintF("contact.penetration = %f\n", contact->penetration);
+
+		collision.contacts.push_back(contact);
+	}
 
 	//return
 	return collision;
@@ -121,25 +184,7 @@ Collision AABBCollider::CollidesWith(SphereCollider& other, Vector3& out)
 
 Collision AABBCollider::CollidesWith(PlaneCollider& other)
 {
-	Collision collision;
-	//Calculate the projection interval radius of the box onto a line parallel to the normal that goes through the box's centre
-	//Line L = box's centre + t * plane's normal, where the box's centre projects onto L when t = 0, and L || plane's normal.
-	//L = b.c + t * p.n
-	//Projection interval radius
-	//dot product of the box's half extents and the absolute of the plane's normal
-	float projectionIntervalRadius = m_halfExtents * abs(other.GetNormal());
-	//Distance between box's centre and plane
-	//dot product of box's centre and planes normal - plane's distance from origin
-	float centreDistance = (m_centre * other.GetNormal()) - other.GetDistance();
-	//If the distance, s, falls within the projection interval radius, r, there's been a collision
-	if (abs(centreDistance) <= projectionIntervalRadius)
-	{
-		//If there's been a collision,
-		collision.collided = true;
-		// calculate contact points:
-
-	}
-	return collision;
+	return other.CollidesWith(*this);
 }
 
 std::array<Vector3, 8> AABBCollider::GetVertices() const
@@ -220,6 +265,30 @@ Vector3 AABBCollider::ClosestPoint(Vector3 point)
 	//x:
 	closestPoint.Clamp(GetMin(), GetMax());
 	return closestPoint;
+}
+
+float AABBCollider::TransformToAxis(const Vector3& axis)	//Code has been noticably simplified as we're using AABB instead of OOBB
+{
+	return	m_halfExtents.x * abs(axis * GetXAxis()) +		//project onto x
+			m_halfExtents.y * abs(axis * GetYAxis()) +	//project onto y
+			m_halfExtents.z * abs(axis * GetZAxis());	//project onto z
+
+}
+
+bool AABBCollider::overlapOnAxis(AABBCollider& other, const Vector3& axis)
+{
+	//project the half size onto axis
+	float project = TransformToAxis(axis);
+	//project the other's half size onto axis
+	float projectOther = other.TransformToAxis(axis);
+
+	//find the vector between the two centres
+	Vector3 toCentre = other.GetCentre() - GetCentre();
+	//and project that vector onto the axis
+	float distance = abs(toCentre * axis);
+
+	//Check for overlap
+	return (distance < project + projectOther);
 }
 
 //Vector3 Collider::ClosestPoint(Vector3 p, AABBCollider b)

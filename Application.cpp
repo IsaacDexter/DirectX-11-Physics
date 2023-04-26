@@ -190,7 +190,7 @@ HRESULT Application::InitWorld()
 	gameObject->GetTransform()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
 	gameObject->GetAppearance()->SetTextureRV(m_groundTextureRV);
 	gameObject->GetPhysicsModel()->EnableGravity(false);
-	gameObject->GetPhysicsModel()->SetCollider(new PlaneCollider(gameObject->GetTransform(), Vector3(0.0f, 1.0f, 0.0f), 0.0f));
+	//gameObject->GetPhysicsModel()->SetCollider(new PlaneCollider(gameObject->GetTransform(), Vector3(0.0f, 1.0f, 0.0f), 0.0f));
 
 	m_gameObjects.push_back(gameObject);
 
@@ -205,13 +205,23 @@ HRESULT Application::InitWorld()
 
 	m_gameObjects.push_back(gameObject);
 	
-	transform = new Transform();
+	/*transform = new Transform();
 	gameObject = new GameObject("Sphere", new Appearance(sphereGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
 	gameObject->GetTransform()->SetPosition(-0.5f, 1.0f, 10.0f);
 	gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 	gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
 	gameObject->GetPhysicsModel()->EnableGravity(true);
 	gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
+
+	m_gameObjects.push_back(gameObject);*/
+	
+	transform = new Transform();
+	gameObject = new GameObject("Cube2", new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
+	gameObject->GetTransform()->SetPosition(-0.5f, 1.0f, 10.0f);
+	gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
+	gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
+	gameObject->GetPhysicsModel()->EnableGravity(true);
+	gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
 
 	m_gameObjects.push_back(gameObject);
 	
@@ -794,7 +804,7 @@ void Application::HandleCollisions(float dt)
 	{
 		if (!gameObject->GetPhysicsModel()->IsCollidable())
 		{
-			break;
+			continue;
 		}
 
 		//Cache the object's aspects that'll be used in the collision response
@@ -843,7 +853,7 @@ void Application::HandleCollisions(float dt)
 
 							if (impulse.MagnitudeSq() > 0.0f || impulseOther.MagnitudeSq() > 0.0f)
 							{
-								//DebugPrintF("impulse = (%f, %f, %f), impulseOther = (%f, %f, %f)\n", impulse.x, impulse.y, impulse.z, impulseOther.x, impulseOther.y, impulseOther.z);
+								DebugPrintF("impulse = (%f, %f, %f), impulseOther = (%f, %f, %f)\n", impulse.x, impulse.y, impulse.z, impulseOther.x, impulseOther.y, impulseOther.z);
 							}
 						}
 					}
