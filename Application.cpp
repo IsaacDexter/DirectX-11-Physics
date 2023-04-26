@@ -184,13 +184,13 @@ HRESULT Application::InitWorld()
 	noSpecMaterial.specularPower = 0.0f;
 
 	Transform* transform = new Transform();
-	GameObject* gameObject = new GameObject("Floor", new Appearance(planeGeometry, noSpecMaterial), transform, new StaticModel(transform, 1.0f, 0.5f));
+	GameObject* gameObject = new GameObject("Floor", new Appearance(planeGeometry, noSpecMaterial), transform, new StaticModel(transform, 1.0f, 0.0f));
 	gameObject->GetTransform()->SetPosition(0.0f, 0.0f, 0.0f);
 	gameObject->GetTransform()->SetScale(15.0f, 15.0f, 15.0f);
 	gameObject->GetTransform()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
 	gameObject->GetAppearance()->SetTextureRV(m_groundTextureRV);
 	gameObject->GetPhysicsModel()->EnableGravity(false);
-	//gameObject->GetPhysicsModel()->SetCollider(new PlaneCollider(gameObject->GetTransform(), Vector3(0.0f, 1.0f, 0.0f), 0.0f));
+	gameObject->GetPhysicsModel()->SetCollider(new PlaneCollider(gameObject->GetTransform(), Vector3(0.0f, 1.0f, 0.0f), 0.0f));
 
 	m_gameObjects.push_back(gameObject);
 
@@ -829,8 +829,8 @@ void Application::HandleCollisions(float dt)
 					Vector3 velocityOther = other->GetPhysicsModel()->GetVelocity();
 					Vector3 relativeVelocity = velocity - velocityOther;
 
-					Vector3 position = gameObject->GetTransform()->GetPosition();
-					Vector3 positionOther = other->GetTransform()->GetPosition();
+					Vector3 position = gameObject->GetPhysicsModel()->GetPosition();
+					Vector3 positionOther = other->GetPhysicsModel()->GetPosition();
 
 					//Resolve overpenetration before handling impulses, using linear projection
 					//find the deepest interpenetration of the contacts
@@ -847,8 +847,8 @@ void Application::HandleCollisions(float dt)
 					//set the positions of the two objects according to their mass so they are not longer interpenetrating
 					position += normal * inverseMass * maxDepth;
 					positionOther += -(normal * inverseMassOther * maxDepth);
-					gameObject->GetTransform()->SetPosition(position);
-					other->GetTransform()->SetPosition(positionOther);
+					gameObject->GetPhysicsModel()->SetPosition(position);
+					other->GetPhysicsModel()->SetPosition(positionOther);
 
 					//For each point of contact in the collision...
 					for (Contact* contact : collision.contacts)

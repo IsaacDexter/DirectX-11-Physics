@@ -43,6 +43,16 @@ public:	//Public Methods
 	/// <returns>This model's collider, if it has one</returns>
 	Collider* GetCollider() const { return m_collider; };
 
+	/// <summary>Specifically exists so that it can be overwritten in static model to prevent any transforms being made.</summary>
+	/// <param name="position">The new position in world coordinates</param>
+	virtual void SetPosition(Vector3 position) { m_transform->SetPosition(position); };
+	/// <summary>Specifically exists so that it can be overwritten in static model to prevent any transforms being made.</summary>
+	/// <param name="position">The position in world coordinates</param>
+	Vector3 GetPosition() const { return m_transform->GetPosition(); };
+	/// <summary>Specifically exists so that it can be overwritten in static model to prevent any transforms being made.</summary>
+	/// <param name="position">The change in position</param>
+	void Displace(Vector3 displacement) { SetPosition(GetPosition() + displacement); };
+
 	/// <param name="velocity">The object's velocity in m/s</param>
 	void SetVelocity(Vector3 velocity) { m_velocity = velocity; }
 	/// <param name="x">The object's velocity in the x direction in m/s</param>

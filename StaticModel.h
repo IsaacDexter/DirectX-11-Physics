@@ -11,5 +11,9 @@ public:
 	virtual void Update(float dt) override;
 	/// <summary>Prevents the application of an impulse, so it can have no collision response
 	virtual void ApplyImpulse(Vector3 impulse) override;
+
+	/// <summary>Specifically exists so that it can be overwritten in static model to prevent any transforms being made.</summary>
+	/// <param name="position">The new position in world coordinates</param>
+	virtual void SetPosition(Vector3 position) override { };
 };
 
