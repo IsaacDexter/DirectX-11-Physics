@@ -78,6 +78,7 @@ private:
 
 	/// <summary>Stores the vertex and index buffers etc. of the donut object.</summary>
 	MeshData m_donutMeshData;
+	MeshData m_sphereMeshData;
 	MeshData m_cubeMeshData;
 	MeshData m_planeMeshData;
 

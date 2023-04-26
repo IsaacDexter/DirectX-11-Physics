@@ -148,6 +148,14 @@ HRESULT Application::InitWorld()
 	donutGeometry.vertexBuffer = m_donutMeshData.VertexBuffer;
 	donutGeometry.vertexBufferOffset = m_donutMeshData.VBOffset;
 	donutGeometry.vertexBufferStride = m_donutMeshData.VBStride;
+	
+	Geometry sphereGeometry;
+	m_sphereMeshData = OBJLoader::Load("Assets/3DModels/sphere.obj", _pd3dDevice);
+	sphereGeometry.indexBuffer = m_sphereMeshData.IndexBuffer;
+	sphereGeometry.numberOfIndices = m_sphereMeshData.IndexCount;
+	sphereGeometry.vertexBuffer = m_sphereMeshData.VertexBuffer;
+	sphereGeometry.vertexBufferOffset = m_sphereMeshData.VBOffset;
+	sphereGeometry.vertexBufferStride = m_sphereMeshData.VBStride;
 
 	Geometry cubeGeometry;
 	cubeGeometry.indexBuffer = m_cubeMeshData.IndexBuffer;
@@ -186,19 +194,30 @@ HRESULT Application::InitWorld()
 
 	m_gameObjects.push_back(gameObject);
 
-	for (auto i = 0; i < NUMBEROFCUBES; i++)
-	{
-		transform = new Transform();
-		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
-		gameObject->GetTransform()->SetPosition(-3.0f + (i * 2.5f), 1.0f, 10.0f);
-		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
-		gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
-		gameObject->GetPhysicsModel()->EnableGravity(true);
-		//gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
-		gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
 
-		m_gameObjects.push_back(gameObject);
-	}
+	transform = new Transform();
+	gameObject = new GameObject("Cube", new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
+	gameObject->GetTransform()->SetPosition(-3.0f, 1.0f, 10.0f);
+	gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
+	gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
+	gameObject->GetPhysicsModel()->EnableGravity(true);
+	gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
+
+	m_gameObjects.push_back(gameObject);
+	
+	transform = new Transform();
+	gameObject = new GameObject("Sphere", new Appearance(sphereGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
+	gameObject->GetTransform()->SetPosition(-0.5f, 1.0f, 10.0f);
+	gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
+	gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
+	gameObject->GetPhysicsModel()->EnableGravity(true);
+	gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
+
+	m_gameObjects.push_back(gameObject);
+	
+
+
+
 
 	transform = new Transform();
 	gameObject = new GameObject("Donut", new Appearance(donutGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.5f));
@@ -836,7 +855,7 @@ void Application::HandleCollisions(float dt)
 
 				if (impulse.MagnitudeSq() > 0.0f || impulseOther.MagnitudeSq() > 0.0f)
 				{
-					DebugPrintF("impulse = (%f, %f, %f), impulseOther = (%f, %f, %f)\n", impulse.x, impulse.y, impulse.z, impulseOther.x, impulseOther.y, impulseOther.z);
+					//DebugPrintF("impulse = (%f, %f, %f), impulseOther = (%f, %f, %f)\n", impulse.x, impulse.y, impulse.z, impulseOther.x, impulseOther.y, impulseOther.z);
 				}
 			}
 			collision.contacts.clear();

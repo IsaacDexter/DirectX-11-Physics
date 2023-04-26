@@ -1,6 +1,7 @@
 #include "AABBCollider.h"
 #include "SphereCollider.h"
 #include "PlaneCollider.h"
+#include "Debug.h"
 
 AABBCollider::AABBCollider(Transform* transform, Vector3 halfExtents) : Collider(transform)
 {
@@ -58,13 +59,52 @@ Collision AABBCollider::CollidesWith(AABBCollider& other)
 Collision AABBCollider::CollidesWith(SphereCollider& other)
 {
 	Collision collision;
-	float distanceSq = DistanceSq(other.GetPosition());
+
+	//convert the centre of the sphere into the box's local space
+	Vector3 relativeCentreOther = other.GetPosition() - GetCentre();
+	//perform seperating axis test to find an axis where the two objects are not colliding
+
+	DebugPrintF("sphere's relative centre = (%f, %f, %f)\n", relativeCentreOther.x, relativeCentreOther.y, relativeCentreOther.z);
+
+	if (abs(relativeCentreOther.x) - other.GetRadius() > m_halfExtents.x)
+	{
+		return collision;
+	}
+	if (abs(relativeCentreOther.y) - other.GetRadius() > m_halfExtents.y)
+	{
+		return collision;
+	}
+	if (abs(relativeCentreOther.z) - other.GetRadius() > m_halfExtents.z)
+	{
+		return collision;
+	}
+
+	//if we haven't early outed, there may still be a collision
+
+	
+	//Find the distance between this box and the centre of the sphere
+	float distanceSq= DistanceSq(other.GetPosition());
+
 	if (distanceSq <= other.GetRadiusSq())
 	{
 		//There has been a collision
 		collision.collided = true;
 		//determine contacts here:
+		Contact* contact = new Contact();
 
+		//Find the closest point on this box to the centre of the sphere
+		Vector3 closestPoint = ClosestPoint(other.GetPosition());
+		contact->point = closestPoint;
+		//Find the line between the centre and the closest point to find the collision normal
+		contact->normal = -(GetCentre() - closestPoint).Normalized();
+		//Fidn the penetration with the full calculation,  not just the sqrt one
+		contact->penetration = other.GetRadius() - sqrt(distanceSq);
+		
+		DebugPrintF("contact.point = (%f, %f, %f)\n", contact->point.x, contact->point.y, contact->point.z);
+		DebugPrintF("contact.normal = (%f, %f, %f)\n", contact->normal.x, contact->normal.y, contact->normal.z);
+		DebugPrintF("contact.penetration = %f\n", contact->penetration);
+
+		collision.contacts.push_back(contact);
 	}
 	return collision;
 }
@@ -141,6 +181,7 @@ float AABBCollider::DistanceSq(Vector3 p)
 		distanceSq += (p.x - GetMax().x);	//add the distance,
 		distanceSq *= distanceSq;			//squared
 	}
+	//For each axis, count any excess distance outside box extents
 	//y:
 	if (p.y < GetMin().y)	//if the point is below the minimum of this axis,
 	{
