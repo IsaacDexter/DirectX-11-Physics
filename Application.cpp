@@ -189,7 +189,7 @@ HRESULT Application::InitWorld()
 	for (auto i = 0; i < NUMBEROFCUBES; i++)
 	{
 		transform = new Transform();
-		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
+		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 1.0f));
 		gameObject->GetTransform()->SetPosition(-3.0f + (i * 2.5f), 1.0f, 10.0f);
 		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 		gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
@@ -780,7 +780,7 @@ void Application::HandleCollisions(float dt)
 
 		//Cache the object's aspects that'll be used in the collision response
 		float inverseMass = 1 / gameObject->GetPhysicsModel()->GetMass();
-		float restitution = -(1+gameObject->GetPhysicsModel()->GetRestitution());
+		float restitution = -(1 + gameObject->GetPhysicsModel()->GetRestitution());
 		Collider* collider = gameObject->GetPhysicsModel()->GetCollider();
 		Vector3 velocity = gameObject->GetPhysicsModel()->GetVelocity();
 
@@ -805,7 +805,7 @@ void Application::HandleCollisions(float dt)
 			}
 			//Cache the second object's aspects that'll be used in the collision response
 			float inverseMassOther = 1 / other->GetPhysicsModel()->GetMass();
-			float restitutionOther = -(1+other->GetPhysicsModel()->GetRestitution());
+			float restitutionOther = -(1 + other->GetPhysicsModel()->GetRestitution());
 			Vector3 velocityOther = other->GetPhysicsModel()->GetVelocity();
 			Vector3 relativeVelocity = velocity - velocityOther;
 
@@ -817,22 +817,13 @@ void Application::HandleCollisions(float dt)
 				{
 					break;
 				}
-
-				//total velocity = -(1 + restitution) * Dot(relative velocity, collision normal)
-				float totalVelocity = (relativeVelocity * contact->normal);
-				//momentum = total velocity * (inverse mass + inverse mass)
+				//find the total velocity from vt = v0 + v1 + ... + vn
+				float totalVelocity = contact->normal * relativeVelocity;
+				//use it to find the momentum from p = mv
 				float momentum = totalVelocity * (inverseMass + inverseMassOther);
-				//impulse = momentum in direction normal to collision
-				Vector3 impulse = (-(1 + restitution) * momentum) * contact->normal;
-				Vector3 impulseOther = (-(1 + restitutionOther) * momentum) * contact->normal;
-
-				//split the impulse evenly across the collision surface by dividing by the number of collision points
-				impulse /= collision.contacts.size();
-				impulseOther /= collision.contacts.size();
-
-				//multiply the impulse by the inverse mass for each object, be sure to put them in opposite directions
-				gameObject->GetPhysicsModel()->ApplyImpulse(impulse * inverseMass);
-				other->GetPhysicsModel()->ApplyImpulse(-impulseOther * inverseMassOther);
+				//apply an impulse according to the momentum * restitution / mass in the direction opposing the collision
+				gameObject->GetPhysicsModel()->ApplyImpulse(inverseMass * momentum * restitution * contact->normal);
+				other->GetPhysicsModel()->ApplyImpulse(-(inverseMassOther * momentum * restitutionOther * contact->normal));
 			}
 			collision.contacts.clear();
 		}
