@@ -1,5 +1,6 @@
 #pragma once
 #include "Collider.h"
+#include <array>
 
 class AABBCollider :
     public Collider
@@ -67,6 +68,8 @@ public:
     /// <param name="halfExtentsY">The object's height, halved, or it's radii in the y direction</param>
     /// <param name="halfExtentsZ">The object's width, halved, or it's radii in the z direction</param>
     void SetHalfExtents(float halfExtentsX, float halfExtentsY, float halfExtentsZ) { m_halfExtents.x = halfExtentsX; m_halfExtents.y = halfExtentsY, m_halfExtents.z = halfExtentsZ; };
+
+    std::array<Vector3, 8> GetVertices() const;
 
     /// <returns>The position - the half extents</returns>
     Vector3 GetMin() const { return m_transform->GetPosition() - m_halfExtents; };

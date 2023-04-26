@@ -43,6 +43,8 @@ struct Contact
 struct Collision
 {
 	bool collided;
+	/// <summary><para>To represent a face-face collision, rather than storing a great many points, simply store each of the four corners of collision.</para>
+	/// <para>To represent an edge collision, store the points on either side of the colliding edge.</para></summary>
 	std::vector<Contact*> contacts;
 	Collision()
 	{

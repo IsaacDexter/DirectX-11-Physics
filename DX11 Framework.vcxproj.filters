@@ -70,7 +70,7 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Contact.h" />
     <ClInclude Include="StaticModel.h">
-      <Filter>Colliders</Filter>
+      <Filter>PhysicsModels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -116,7 +116,7 @@
       <Filter>Colliders</Filter>
     </ClCompile>
     <ClCompile Include="StaticModel.cpp">
-      <Filter>Colliders</Filter>
+      <Filter>PhysicsModels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

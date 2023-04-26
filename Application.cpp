@@ -176,7 +176,7 @@ HRESULT Application::InitWorld()
 	noSpecMaterial.specularPower = 0.0f;
 
 	Transform* transform = new Transform();
-	GameObject* gameObject = new GameObject("Floor", new Appearance(planeGeometry, noSpecMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.5f));
+	GameObject* gameObject = new GameObject("Floor", new Appearance(planeGeometry, noSpecMaterial), transform, new StaticModel(transform, 1.0f, 0.5f));
 	gameObject->GetTransform()->SetPosition(0.0f, 0.0f, 0.0f);
 	gameObject->GetTransform()->SetScale(15.0f, 15.0f, 15.0f);
 	gameObject->GetTransform()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
@@ -189,13 +189,13 @@ HRESULT Application::InitWorld()
 	for (auto i = 0; i < NUMBEROFCUBES; i++)
 	{
 		transform = new Transform();
-		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.5f));
+		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 1.0f));
 		gameObject->GetTransform()->SetPosition(-3.0f + (i * 2.5f), 1.0f, 10.0f);
 		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 		gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
 		gameObject->GetPhysicsModel()->EnableGravity(true);
-		//gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
-		gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
+		gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
+		//gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
 
 		m_gameObjects.push_back(gameObject);
 	}

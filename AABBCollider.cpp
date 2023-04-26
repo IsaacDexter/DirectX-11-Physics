@@ -102,6 +102,29 @@ Collision AABBCollider::CollidesWith(PlaneCollider& other)
 	return collision;
 }
 
+std::array<Vector3, 8> AABBCollider::GetVertices() const
+{
+	std::array<Vector3, 8> vertices = std::array<Vector3, 8>();
+	//Write all 8 vertices of the shape to an array
+	vertices = {
+		Vector3(-m_halfExtents.x, -m_halfExtents.y, -m_halfExtents.z),
+		Vector3(-m_halfExtents.x, -m_halfExtents.y, +m_halfExtents.z),
+		Vector3(-m_halfExtents.x, +m_halfExtents.y, -m_halfExtents.z),
+		Vector3(-m_halfExtents.x, +m_halfExtents.y, +m_halfExtents.z),
+		Vector3(+m_halfExtents.x, -m_halfExtents.y, -m_halfExtents.z),
+		Vector3(+m_halfExtents.x, -m_halfExtents.y, +m_halfExtents.z),
+		Vector3(+m_halfExtents.x, +m_halfExtents.y, -m_halfExtents.z),
+		Vector3(+m_halfExtents.x, +m_halfExtents.y, +m_halfExtents.z)
+	};
+	//Apply the offset of the shape to give the world position. For an OOBB, this would be a transform matrix
+	Vector3 offset = m_centre + GetPosition();
+	for (unsigned int i = 0; i < 8; i++)
+	{
+		vertices[i] += offset;
+	}
+	return vertices;
+}
+
 float AABBCollider::DistanceSq(Vector3 p)
 {
 	float distanceSq = 0.0f;

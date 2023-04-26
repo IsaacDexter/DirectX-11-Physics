@@ -29,7 +29,7 @@ public:	//Public Methods
 
 	/// <summary>Applys a force over a given time of one tick as a vector</summary>
 	/// <param name="impulse">The force to apply, in Ns</param>
-	void ApplyImpulse(Vector3 impulse);
+	virtual void ApplyImpulse(Vector3 impulse);
 
 #pragma endregion
 

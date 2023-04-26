@@ -8,3 +8,7 @@ void StaticModel::Update(float dt)
 {
 	
 }
+
+void StaticModel::ApplyImpulse(Vector3 impulse)
+{
+}

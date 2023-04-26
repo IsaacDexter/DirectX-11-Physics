@@ -61,6 +61,32 @@ Collision PlaneCollider::CollidesWith(AABBCollider& other)
         //if theres been a collision,
         collision.collided = true;
         //Calculate contact points:
+        //We can find the set of contacts by simply checking each vertex of the box one ny one and generating a contact if it lies below the plane
+        //This check for each vertex is similar to the one made in the sphere plane detector: d = p dot l - t,
+        //But as the the vertices have no radii, simply check if the sign of d is positive or negative. A collision has occured if p dot l < l
+
+        //for each vertex 
+        for (Vector3 vertex : other.GetVertices())
+        {
+            //calculate the distance of this vertex from the plane
+            float distance = (vertex * m_normal);
+            //if it's greater than the plane's distance, this vertex hasn't collided, skip it
+            if (distance > m_distance)
+            {
+                break;
+            }
+            //otherwise, there has been a collision with this vertex
+            Contact* contact = new Contact();
+            //The contact point, halfway between the vertex and the plane, can be found by:
+            //plane's normal * (speraration distance)/2 + vertex's location
+            contact->point = m_normal * (distance - m_distance) + vertex;
+            //The normal is the plane's normal, always
+            contact->normal = m_normal;
+            //penetration is how the plane's distance - the distance to the vertex
+            contact->penetration = m_distance - distance;
+            //write this vertex
+            collision.contacts.push_back(contact);
+        }
 
     }
     return collision;
