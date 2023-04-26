@@ -189,13 +189,13 @@ HRESULT Application::InitWorld()
 	for (auto i = 0; i < NUMBEROFCUBES; i++)
 	{
 		transform = new Transform();
-		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
+		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.5f));
 		gameObject->GetTransform()->SetPosition(-3.0f + (i * 2.5f), 1.0f, 10.0f);
 		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 		gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
 		gameObject->GetPhysicsModel()->EnableGravity(true);
-		gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
-		//gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
+		//gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
+		gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
 
 		m_gameObjects.push_back(gameObject);
 	}
@@ -812,27 +812,29 @@ void Application::HandleCollisions(float dt)
 			//For each point of contact in the collision...
 			for (Contact* contact : collision.contacts)
 			{
-				//Check the objects are approaching eachother by dotting the relative velocity onto the normal
-				if (contact->normal * relativeVelocity > 0.0f)
-				{
-					break;
-				}
-
 				//total velocity = -(1 + restitution) * Dot(relative velocity, collision normal)
 				float totalVelocity = (relativeVelocity * contact->normal);
-				//momentum = total velocity * (inverse mass + inverse mass)
-				float momentum = totalVelocity * (inverseMass + inverseMassOther);
-				//impulse = momentum in direction normal to collision
-				Vector3 impulse = (-(1 + restitution) * momentum) * contact->normal;
-				Vector3 impulseOther = (-(1 + restitutionOther) * momentum) * contact->normal;
 
-				//split the impulse evenly across the collision surface by dividing by the number of collision points
-				impulse /= collision.contacts.size();
-				impulseOther /= collision.contacts.size();
+				//Check the objects are approaching eachother by dotting the relative velocity onto the normal
+				if (totalVelocity < 0.0f)
+				{
+					//momentum = total velocity * (inverse mass + inverse mass)
+					float momentum = totalVelocity * (inverseMass + inverseMassOther);
+					//impulse = momentum in direction normal to collision
+					Vector3 impulse = (-(1 + restitution) * momentum) * contact->normal * inverseMass;
+					Vector3 impulseOther = (-(1 + restitutionOther) * momentum) * contact->normal * inverseMassOther;
+					//place the second impulse in the oposite direction
+					impulseOther = -impulseOther;
 
-				//multiply the impulse by the inverse mass for each object, be sure to put them in opposite directions
-				gameObject->GetPhysicsModel()->ApplyImpulse(impulse * inverseMass);
-				other->GetPhysicsModel()->ApplyImpulse(-impulseOther * inverseMassOther);
+					//split the impulse evenly across the collision surface by dividing by the number of collision points
+					impulse /= collision.contacts.size();
+					impulseOther /= collision.contacts.size();
+
+					//multiply the impulse by the inverse mass for each object, be sure to put them in opposite directions
+					gameObject->GetPhysicsModel()->ApplyImpulse(impulse);
+					other->GetPhysicsModel()->ApplyImpulse(impulseOther);
+					DebugPrintF("impulse = (%f, %f, %f), impulseOther = (%f, %f, %f)\n", impulse.x, impulse.y, impulse.z, impulseOther.x, impulseOther.y, impulseOther.z);
+				}
 			}
 			collision.contacts.clear();
 		}
