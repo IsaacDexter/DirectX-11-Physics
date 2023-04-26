@@ -806,59 +806,50 @@ void Application::HandleCollisions(float dt)
 		//for each other collidable object...
 		for (GameObject* other : m_gameObjects)	
 		{
-			if (gameObject == other)
+			if (gameObject != other && other->GetPhysicsModel()->IsCollidable())
 			{
-				break;
-			}
-			if (!other->GetPhysicsModel()->IsCollidable())
-			{
-				break;
-			}
-
-			//If there is a collision between the two,
-			Collider* colliderOther = other->GetPhysicsModel()->GetCollider();
-			Collision collision = collider->CollidesWith(*colliderOther);
-			if (!collision.collided)
-			{
-				break;
-			}
-			//Cache the second object's aspects that'll be used in the collision response
-			float inverseMassOther = 1 / other->GetPhysicsModel()->GetMass();
-			float restitutionOther = -(1 + other->GetPhysicsModel()->GetRestitution());
-			Vector3 velocityOther = other->GetPhysicsModel()->GetVelocity();
-			Vector3 relativeVelocity = velocity - velocityOther;
-
-			//For each point of contact in the collision...
-			for (Contact* contact : collision.contacts)
-			{
-				//Check the objects are approaching eachother by dotting the relative velocity onto the normal
-				if (contact->normal * relativeVelocity > 0.0f)
+				//If there is a collision between the two,
+				Collider* colliderOther = other->GetPhysicsModel()->GetCollider();
+				Collision collision = collider->CollidesWith(*colliderOther);
+				if (collision.collided)
 				{
-					break;
-				}
+					//Cache the second object's aspects that'll be used in the collision response
+					float inverseMassOther = 1 / other->GetPhysicsModel()->GetMass();
+					float restitutionOther = -(1 + other->GetPhysicsModel()->GetRestitution());
+					Vector3 velocityOther = other->GetPhysicsModel()->GetVelocity();
+					Vector3 relativeVelocity = velocity - velocityOther;
 
-				//total velocity = -(1 + restitution) * Dot(relative velocity, collision normal)
-				float totalVelocity = contact->normal * relativeVelocity;
-				//momentum = total velocity * (inverse mass + inverse mass)
-				float momentum = totalVelocity * (inverseMass + inverseMassOther);
+					//For each point of contact in the collision...
+					for (Contact* contact : collision.contacts)
+					{
+						//Check the objects are approaching eachother by dotting the relative velocity onto the normal
+						if (contact->normal * relativeVelocity <= 0.0f)
+						{
+							//total velocity = -(1 + restitution) * Dot(relative velocity, collision normal)
+							float totalVelocity = contact->normal * relativeVelocity;
+							//momentum = total velocity * (inverse mass + inverse mass)
+							float momentum = totalVelocity * (inverseMass + inverseMassOther);
 
-				//impulse = momentum/mass in direction normal to collision
-				Vector3 impulse = inverseMass * momentum * restitution * contact->normal;
-				//impulse = momentum/mass in direction opposite of normal to collision
-				Vector3 impulseOther = -(inverseMassOther * momentum * restitutionOther * contact->normal);
-				//split the impulse evenly across the collision surface by dividing by the number of collision points
-				impulse /= collision.contacts.size();
-				impulseOther /= collision.contacts.size();
+							//impulse = momentum/mass in direction normal to collision
+							Vector3 impulse = inverseMass * momentum * restitution * contact->normal;
+							//impulse = momentum/mass in direction opposite of normal to collision
+							Vector3 impulseOther = -(inverseMassOther * momentum * restitutionOther * contact->normal);
+							//split the impulse evenly across the collision surface by dividing by the number of collision points
+							impulse /= collision.contacts.size();
+							impulseOther /= collision.contacts.size();
 
-				gameObject->GetPhysicsModel()->ApplyImpulse(impulse);
-				other->GetPhysicsModel()->ApplyImpulse(impulseOther);
+							gameObject->GetPhysicsModel()->ApplyImpulse(impulse);
+							other->GetPhysicsModel()->ApplyImpulse(impulseOther);
 
-				if (impulse.MagnitudeSq() > 0.0f || impulseOther.MagnitudeSq() > 0.0f)
-				{
-					//DebugPrintF("impulse = (%f, %f, %f), impulseOther = (%f, %f, %f)\n", impulse.x, impulse.y, impulse.z, impulseOther.x, impulseOther.y, impulseOther.z);
+							if (impulse.MagnitudeSq() > 0.0f || impulseOther.MagnitudeSq() > 0.0f)
+							{
+								//DebugPrintF("impulse = (%f, %f, %f), impulseOther = (%f, %f, %f)\n", impulse.x, impulse.y, impulse.z, impulseOther.x, impulseOther.y, impulseOther.z);
+							}
+						}
+					}
+					collision.contacts.clear();
 				}
 			}
-			collision.contacts.clear();
 		}
 	}
 }
