@@ -189,13 +189,13 @@ HRESULT Application::InitWorld()
 	for (auto i = 0; i < NUMBEROFCUBES; i++)
 	{
 		transform = new Transform();
-		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 1.0f));
+		gameObject = new GameObject("Cube " + to_string(i), new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
 		gameObject->GetTransform()->SetPosition(-3.0f + (i * 2.5f), 1.0f, 10.0f);
 		gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
 		gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
 		gameObject->GetPhysicsModel()->EnableGravity(true);
-		gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
-		//gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
+		//gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
+		gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
 
 		m_gameObjects.push_back(gameObject);
 	}
@@ -817,13 +817,27 @@ void Application::HandleCollisions(float dt)
 				{
 					break;
 				}
-				//find the total velocity from vt = v0 + v1 + ... + vn
+
+				//total velocity = -(1 + restitution) * Dot(relative velocity, collision normal)
 				float totalVelocity = contact->normal * relativeVelocity;
-				//use it to find the momentum from p = mv
+				//momentum = total velocity * (inverse mass + inverse mass)
 				float momentum = totalVelocity * (inverseMass + inverseMassOther);
-				//apply an impulse according to the momentum * restitution / mass in the direction opposing the collision
-				gameObject->GetPhysicsModel()->ApplyImpulse(inverseMass * momentum * restitution * contact->normal);
-				other->GetPhysicsModel()->ApplyImpulse(-(inverseMassOther * momentum * restitutionOther * contact->normal));
+
+				//impulse = momentum/mass in direction normal to collision
+				Vector3 impulse = inverseMass * momentum * restitution * contact->normal;
+				//impulse = momentum/mass in direction opposite of normal to collision
+				Vector3 impulseOther = -(inverseMassOther * momentum * restitutionOther * contact->normal);
+				//split the impulse evenly across the collision surface by dividing by the number of collision points
+				impulse /= collision.contacts.size();
+				impulseOther /= collision.contacts.size();
+
+				gameObject->GetPhysicsModel()->ApplyImpulse(impulse);
+				other->GetPhysicsModel()->ApplyImpulse(impulseOther);
+
+				if (impulse.MagnitudeSq() > 0.0f || impulseOther.MagnitudeSq() > 0.0f)
+				{
+					DebugPrintF("impulse = (%f, %f, %f), impulseOther = (%f, %f, %f)\n", impulse.x, impulse.y, impulse.z, impulseOther.x, impulseOther.y, impulseOther.z);
+				}
 			}
 			collision.contacts.clear();
 		}
