@@ -102,12 +102,12 @@ void PhysicsModel::ApplyDrag()
 		Vector3 direction = m_velocity.Normalized();
 		//Calculate how much area is being moved against it, remembering that area is a vector3, simply get the dot product of the direction and the areas to get the combined area for the direction being moved in
 		float referenceArea = abs(direction) * m_referenceArea;
-		//DebugPrintF("Reference Area = ( %f )\n", referenceArea);
+		DebugPrintF("Reference Area = ( %f )\n", referenceArea);
 		m_dragForceMagnitude = 0.5f * m_fluidDensity * m_dragCoefficient * referenceArea * m_velocity.MagnitudeSq();	//|Fd| = 0.5 * rho * Cd * A * |V|^2
 		Vector3 dragForce = direction * -1;	//Find the direction against movement
 		dragForce *= m_dragForceMagnitude;	//multiply this direction by the dragnitude (drag magnitude lol)
 		AddForce(dragForce);
-		//DebugPrintF("Drag Force = ( %f , %f , %f )\n", dragForce.x, dragForce.y, dragForce.z);
+		DebugPrintF("Drag Force = ( %f , %f , %f )\n", dragForce.x, dragForce.y, dragForce.z);
 	}
 }
 
