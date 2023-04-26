@@ -829,6 +829,27 @@ void Application::HandleCollisions(float dt)
 					Vector3 velocityOther = other->GetPhysicsModel()->GetVelocity();
 					Vector3 relativeVelocity = velocity - velocityOther;
 
+					Vector3 position = gameObject->GetTransform()->GetPosition();
+					Vector3 positionOther = other->GetTransform()->GetPosition();
+
+					//Resolve overpenetration before handling impulses, using linear projection
+					//find the deepest interpenetration of the contacts
+					float maxDepth = 0.0f;
+					Vector3 normal = Vector3();
+					for (Contact* contact : collision.contacts)
+					{
+						if (contact->penetration > maxDepth)
+						{
+							maxDepth = contact->penetration;
+							normal = contact->normal;
+						}
+					}
+					//set the positions of the two objects according to their mass so they are not longer interpenetrating
+					position += normal * inverseMass * maxDepth;
+					positionOther += -(normal * inverseMassOther * maxDepth);
+					gameObject->GetTransform()->SetPosition(position);
+					other->GetTransform()->SetPosition(positionOther);
+
 					//For each point of contact in the collision...
 					for (Contact* contact : collision.contacts)
 					{
