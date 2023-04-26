@@ -64,7 +64,7 @@ Collision AABBCollider::CollidesWith(SphereCollider& other)
 	Vector3 relativeCentreOther = other.GetPosition() - GetCentre();
 	//perform seperating axis test to find an axis where the two objects are not colliding
 
-	DebugPrintF("sphere's relative centre = (%f, %f, %f)\n", relativeCentreOther.x, relativeCentreOther.y, relativeCentreOther.z);
+	//DebugPrintF("sphere's relative centre = (%f, %f, %f)\n", relativeCentreOther.x, relativeCentreOther.y, relativeCentreOther.z);
 
 	if (abs(relativeCentreOther.x) - other.GetRadius() > m_halfExtents.x)
 	{
@@ -100,9 +100,9 @@ Collision AABBCollider::CollidesWith(SphereCollider& other)
 		//Fidn the penetration with the full calculation,  not just the sqrt one
 		contact->penetration = other.GetRadius() - sqrt(distanceSq);
 		
-		DebugPrintF("contact.point = (%f, %f, %f)\n", contact->point.x, contact->point.y, contact->point.z);
-		DebugPrintF("contact.normal = (%f, %f, %f)\n", contact->normal.x, contact->normal.y, contact->normal.z);
-		DebugPrintF("contact.penetration = %f\n", contact->penetration);
+		//DebugPrintF("contact.point = (%f, %f, %f)\n", contact->point.x, contact->point.y, contact->point.z);
+		//DebugPrintF("contact.normal = (%f, %f, %f)\n", contact->normal.x, contact->normal.y, contact->normal.z);
+		//DebugPrintF("contact.penetration = %f\n", contact->penetration);
 
 		collision.contacts.push_back(contact);
 	}
