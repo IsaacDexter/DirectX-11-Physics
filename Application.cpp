@@ -727,32 +727,32 @@ void Application::Cleanup()
 
 void Application::moveForward(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 0.0f, -1.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, 0.0f, -1.0f), Vector3(1.0f, 0.0f, 1.0f));
 }
 
 void Application::moveBackward(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 0.0f, 1.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 0.0f, -1.0f));
 }
 
 void Application::moveUp(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, 1.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, -1.0f, 0.0f));
 }
 
 void Application::moveDown(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(0.0f, -1.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, -1.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f));
 }
 
 void Application::moveLeft(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(1.0f, 0.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(1.0f, 0.0f, 0.0f), Vector3(-1.0f, 0.0f, 0.0f));
 }
 
 void Application::moveRight(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddForce(-1.0f, 0.0f, 0.0f);
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(-1.0f, 0.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f));
 }
 
 #pragma endregion

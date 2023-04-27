@@ -31,7 +31,15 @@ public:	//Public Methods
 	/// <param name="impulse">The force to apply, in Ns</param>
 	virtual void ApplyImpulse(Vector3 impulse);
 
+	/// <summary>For use in rigidbody rotations. Applies a force to a specific global point</summary>
+	/// <param name="force">The force impulse, in N</param>
+	/// <param name="point">The point to apply the impulse at, in global space</param>
 	virtual void AddRelativeForce(Vector3 force, Vector3 point);
+	/// <summary>The same as add relative force, but using a local point rather than a global one.
+	/// For use in rigidbody rotations. Applies a force to a specific local point</summary>
+	/// <param name="force">The force impulse, in N</param>
+	/// <param name="point">The point to apply the impulse at, in local space</param>
+	virtual void AddRelativeForceLocal(Vector3 force, Vector3 point);
 
 #pragma endregion
 

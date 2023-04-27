@@ -9,7 +9,11 @@ class RigidBodyModel:
 public:
 	RigidBodyModel(Transform* transform, float mass = 1.0f, float restitution = 0.5f);
 	virtual void Update(float dt);
-	virtual void AddRelativeForce(Vector3 force, Vector3 point);
+
+	/// <summary>For use in rigidbody rotations. Applies a force to a specific global point</summary>
+	/// <param name="force">The force impulse, in N</param>
+	/// <param name="point">The point to apply the impulse at, in global space</param>
+	virtual void AddRelativeForce(Vector3 force, Vector3 point) override;
 
 #pragma region GettersAndSetters
 
@@ -18,7 +22,8 @@ public:
 	/// <returns>The orientation as a quaternion</returns>
 	Quaternion GetOrientation() const { return m_transform->GetOrientation(); };
 	/// <param name="position">The change in orientation</param>
-	void Rotate(Vector3 rotation) { SetOrientation(GetOrientation() + (GetOrientation() * rotation) / 2); };
+	void Rotate(Vector3 rotation) { SetOrientation(GetOrientation() + GetOrientation() * rotation); };
+	//void Rotate(Vector3 rotation) { SetOrientation(GetOrientation() * MakeQFromEulerAngles(rotation.x, rotation.y, rotation.z)); };
 
 	/// <param name="inertiaTensor"><para>The inertia tensor in three dimensions is a 3 × 3 matrix that is characteristic of a rigid body</para>
 	/// <para>Each rigid body will have its own inertia tensor, just like it has its own mass</para>

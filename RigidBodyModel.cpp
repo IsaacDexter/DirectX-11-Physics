@@ -90,7 +90,7 @@ void RigidBodyModel::CalculateAngularVelocity(float dt)
 void RigidBodyModel::CalculateRotation(float dt)
 {
 	Vector3 rotation = m_angularVelocity * dt;
-	Rotate(rotation);
+	Rotate(rotation * 0.5);
 }
 
 void RigidBodyModel::ClearTorqueAndAngularAcceleration()

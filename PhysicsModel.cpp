@@ -136,3 +136,10 @@ void PhysicsModel::AddRelativeForce(Vector3 force, Vector3 point)
 	
 }
 
+void PhysicsModel::AddRelativeForceLocal(Vector3 force, Vector3 point)
+{
+	//Move the relative point into global space
+	point += GetPosition();
+	AddRelativeForce(force, point);
+}
+
