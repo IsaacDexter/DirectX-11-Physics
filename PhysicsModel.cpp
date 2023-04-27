@@ -76,21 +76,11 @@ void PhysicsModel::CalculateDragCoefficient()
 	}
 }
 
-bool PhysicsModel::IsGrounded()
-{
-	bool grounded = m_transform->GetPosition().y <= 1.0f;
-	if (grounded)
-	{
-		m_netforce.y = fmax(m_netforce.y, 0.0f);
-		m_acceleration.y = fmax(m_acceleration.y, 0.0f);
-		m_velocity.y = fmax(m_velocity.y, 0.0f);
-	}
-	return grounded;
-}
+
 
 void PhysicsModel::ApplyGravity()
 {
-	if (m_enableGravity && !IsGrounded())	//If gravity is being applied, apply weight downwards
+	if (m_enableGravity)	//If gravity is being applied, apply weight downwards
 	{
 		AddForce(m_weight);	
 	}
@@ -114,7 +104,7 @@ void PhysicsModel::ApplyDrag()
 
 void PhysicsModel::ApplyFriction()
 {
-	if (IsGrounded() && m_velocity.MagnitudeSq() > 0.0f) //if we are in contact with a surface, and are moving, apply dynamic friction.
+	if (m_inContact && m_velocity.MagnitudeSq() > 0.0f) //if we are in contact with a surface, and are moving, apply dynamic friction.
 	{
 		//float normalForceMagnitude = abs(fmin(m_netforce.y, 0.0f));	//Get the downwards net force, and then get its normal by absoluting it. 
 		float normalForceMagnitude = fabs(fmin(m_weight.y, 0.0f));	//until collision is done, simply use the weight for now.
@@ -122,7 +112,8 @@ void PhysicsModel::ApplyFriction()
 		Vector3 frictionForce = m_velocity.Normalized() * -1.0f;	//Get the direction against the movement
 		frictionForce *= frictionForceMagnitude;	//Apply the strength of the frictional force
 		AddForce(frictionForce);
-		//DebugPrintF("Friction Force = ( %f , %f , %f )\n", frictionForce.x, frictionForce.y, frictionForce.z);
+		DebugPrintF("Friction Force = ( %f , %f , %f )\n", frictionForce.x, frictionForce.y, frictionForce.z);
+		m_inContact = false;	//Reset the fact we are in contact now frictions been applied
 	}
 }
 

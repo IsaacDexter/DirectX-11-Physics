@@ -115,6 +115,8 @@ public:	//Public Methods
 	/// <returns>The cross sectional area of the object perpendicular the direction of motion relative to the fluid, in m^2</returns>
 	Vector3 GetReferenceArea() const { return m_referenceArea; };
 
+	void SetInContact(bool inContact) { m_inContact = inContact; };
+
 #pragma endregion
 
 
@@ -138,8 +140,6 @@ protected:	//Protected Methods
 	void CalculateWeight();
 	/// <summary>If using dynamic drag coefficients, Recalculates the drag coefficent, according to cd = 2Fd / rho * u^2 * A</summary>
 	void CalculateDragCoefficient();
-	/// <returns>If y is less than or equal to 1.0f, and cancels movement in the negative y</returns>
-	bool IsGrounded();
 
 #pragma endregion
 
@@ -163,6 +163,8 @@ protected:	//Protected Variables
 	/// <summary>The object's acceleration in m/s^2</summary>
 	Vector3 m_acceleration;
 
+	/// <summary>Whether or not the object is currently colliding with another object, such as the ground</summary>
+	bool m_inContact = false;
 
 	/// <summary>The sum of all forces acting on the object, in N</summary>
 	Vector3 m_netforce;

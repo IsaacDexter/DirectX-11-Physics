@@ -823,6 +823,10 @@ void Application::HandleCollisions(float dt)
 				Collision collision = collider->CollidesWith(*colliderOther);
 				if (collision.collided)
 				{
+					//reenable friction for both of the objects
+					gameObject->GetPhysicsModel()->SetInContact(true);
+					other->GetPhysicsModel()->SetInContact(true);
+
 					//Cache the second object's aspects that'll be used in the collision response
 					float inverseMassOther = other->GetPhysicsModel()->GetInverseMass();
 					float restitutionOther = -(1 + other->GetPhysicsModel()->GetRestitution());
