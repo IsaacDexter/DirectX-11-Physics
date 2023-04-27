@@ -5,7 +5,7 @@
 Transform::Transform()
 {
 	m_position = Vector3();
-	m_rotation = Vector3();
+	m_orientation = Quaternion();
 	m_scale = Vector3(1.0f, 1.0f, 1.0f);
 
 	m_parent = nullptr;

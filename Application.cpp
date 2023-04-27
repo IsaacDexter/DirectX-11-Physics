@@ -184,10 +184,10 @@ HRESULT Application::InitWorld()
 	noSpecMaterial.specularPower = 0.0f;
 
 	Transform* transform = new Transform();
-	GameObject* gameObject = new GameObject("Floor", new Appearance(planeGeometry, noSpecMaterial), transform, new StaticModel(transform, 1.0f, 0.0f));
+	GameObject* gameObject = new GameObject("Floor", new Appearance(planeGeometry, noSpecMaterial), transform, new RigidBodyModel(transform, 0.0f, 0.0f));
 	gameObject->GetTransform()->SetPosition(0.0f, 0.0f, 0.0f);
 	gameObject->GetTransform()->SetScale(15.0f, 15.0f, 15.0f);
-	gameObject->GetTransform()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
+	gameObject->GetTransform()->SetRotation(90.0f, 0.0f, 0.0f);
 	gameObject->GetAppearance()->SetTextureRV(m_groundTextureRV);
 	gameObject->GetPhysicsModel()->EnableGravity(false);
 	gameObject->GetPhysicsModel()->SetCollider(new PlaneCollider(gameObject->GetTransform(), Vector3(0.0f, 1.0f, 0.0f), 0.0f));
@@ -205,15 +205,15 @@ HRESULT Application::InitWorld()
 
 	m_gameObjects.push_back(gameObject);
 	
-	/*transform = new Transform();
-	gameObject = new GameObject("Sphere", new Appearance(sphereGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
-	gameObject->GetTransform()->SetPosition(-0.5f, 1.0f, 10.0f);
-	gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
-	gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
-	gameObject->GetPhysicsModel()->EnableGravity(true);
-	gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
+	//transform = new Transform();
+	//gameObject = new GameObject("Sphere", new Appearance(sphereGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
+	//gameObject->GetTransform()->SetPosition(-0.5f, 1.0f, 10.0f);
+	//gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
+	//gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
+	//gameObject->GetPhysicsModel()->EnableGravity(true);
+	//gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
 
-	m_gameObjects.push_back(gameObject);*/
+	//m_gameObjects.push_back(gameObject);
 	
 	transform = new Transform();
 	gameObject = new GameObject("Cube2", new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
@@ -808,7 +808,7 @@ void Application::HandleCollisions(float dt)
 		}
 
 		//Cache the object's aspects that'll be used in the collision response
-		float inverseMass = 1 / gameObject->GetPhysicsModel()->GetMass();
+		float inverseMass = gameObject->GetPhysicsModel()->GetInverseMass();
 		float restitution = -(1 + gameObject->GetPhysicsModel()->GetRestitution());
 		Collider* collider = gameObject->GetPhysicsModel()->GetCollider();
 		Vector3 velocity = gameObject->GetPhysicsModel()->GetVelocity();
@@ -824,7 +824,7 @@ void Application::HandleCollisions(float dt)
 				if (collision.collided)
 				{
 					//Cache the second object's aspects that'll be used in the collision response
-					float inverseMassOther = 1 / other->GetPhysicsModel()->GetMass();
+					float inverseMassOther = other->GetPhysicsModel()->GetInverseMass();
 					float restitutionOther = -(1 + other->GetPhysicsModel()->GetRestitution());
 					Vector3 velocityOther = other->GetPhysicsModel()->GetVelocity();
 					Vector3 relativeVelocity = velocity - velocityOther;
@@ -869,8 +869,10 @@ void Application::HandleCollisions(float dt)
 							impulse /= collision.contacts.size();
 							impulseOther /= collision.contacts.size();
 
-							gameObject->GetPhysicsModel()->ApplyImpulse(impulse);
-							other->GetPhysicsModel()->ApplyImpulse(impulseOther);
+							//gameObject->GetPhysicsModel()->ApplyImpulse(impulse);
+							//other->GetPhysicsModel()->ApplyImpulse(impulseOther);
+							gameObject->GetPhysicsModel()->AddRelativeForce(impulse, contact->point);
+							other->GetPhysicsModel()->AddRelativeForce(impulseOther, contact->point);
 
 							if (impulse.MagnitudeSq() > 0.0f || impulseOther.MagnitudeSq() > 0.0f)
 							{

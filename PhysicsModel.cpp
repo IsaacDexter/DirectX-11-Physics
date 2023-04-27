@@ -11,6 +11,8 @@ PhysicsModel::PhysicsModel(Transform* transform, float mass, float restitution)
 	CalculateWeight();
 
 	m_referenceArea *= m_transform->GetScale();
+
+	m_velocity = Vector3();
 }
 
 PhysicsModel::~PhysicsModel()
@@ -49,9 +51,8 @@ void PhysicsModel::CalculateVelocity(float dt)
 
 void PhysicsModel::CalculateDisplacement(float dt)
 {
-	Vector3 position = m_transform->GetPosition();		//Get current position
 	Vector3 displacement = m_velocity * dt;				//ds = v * dt
-	m_transform->SetPosition(position + displacement);	//Sets current position
+	Displace(displacement);	//Sets current position
 }
 
 void PhysicsModel::ClearForceAndAcceleration()
@@ -129,3 +130,9 @@ void PhysicsModel::ApplyImpulse(Vector3 impulse)
 {
 	m_velocity += impulse;
 }
+
+void PhysicsModel::AddRelativeForce(Vector3 force, Vector3 point)
+{
+	
+}
+

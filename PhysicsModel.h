@@ -31,6 +31,8 @@ public:	//Public Methods
 	/// <param name="impulse">The force to apply, in Ns</param>
 	virtual void ApplyImpulse(Vector3 impulse);
 
+	virtual void AddRelativeForce(Vector3 force, Vector3 point);
+
 #pragma endregion
 
 #pragma region SettersAndGetters
@@ -75,6 +77,8 @@ public:	//Public Methods
 	void SetMass(float mass) { m_mass = mass; CalculateWeight(); };
 	/// <returns>The object's mass, in kg</returns>
 	float GetMass() const { return m_mass; };
+	/// <returns>1 / The object's mass, in kg</returns>
+	float GetInverseMass() const { if (m_mass == 0) return 0; return 1 / m_mass; };
 	
 	/// <param name="restitution">The object's coefficient restitution, from 0 - 1, where 0 is an inelastic object and 1 is a perfectly elastic one</param>
 	void SetRestitution(float restitution) { m_restitution = restitution; };
@@ -119,6 +123,7 @@ protected:	//Protected Methods
 	/// <summary>Displacement = Velocity * Delta Time. Position += Displacement</summary>
 	/// <param name="dt">Delta Time</param>
 	void CalculateDisplacement(float dt);
+
 	/// <summary>Resets force and acceleration to their default Vector. Should be called at the end of the update call</summary>
 	void ClearForceAndAcceleration();
 	/// <summary>Recalculates weight, using Fg = g * m</summary>
@@ -127,8 +132,6 @@ protected:	//Protected Methods
 	void CalculateDragCoefficient();
 	/// <returns>If y is less than or equal to 1.0f, and cancels movement in the negative y</returns>
 	bool IsGrounded();
-
-
 
 #pragma endregion
 
@@ -151,6 +154,7 @@ protected:	//Protected Variables
 	Vector3 m_velocity;
 	/// <summary>The object's acceleration in m/s^2</summary>
 	Vector3 m_acceleration;
+
 
 	/// <summary>The sum of all forces acting on the object, in N</summary>
 	Vector3 m_netforce;

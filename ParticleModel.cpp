@@ -9,3 +9,8 @@ void ParticleModel::Update(float dt)
 {
 	PhysicsModel::Update(dt);
 }
+
+void ParticleModel::AddRelativeForce(Vector3 force, Vector3 point)
+{
+	AddForce(force);
+}
