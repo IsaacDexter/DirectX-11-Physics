@@ -123,7 +123,7 @@ void PhysicsModel::ApplyImpulse(Vector3 impulse)
 
 void PhysicsModel::AddRelativeForce(Vector3 force, Vector3 point)
 {
-	
+	AddForce(force);
 }
 
 void PhysicsModel::AddRelativeForceLocal(Vector3 force, Vector3 point)

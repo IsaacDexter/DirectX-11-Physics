@@ -874,8 +874,8 @@ void Application::HandleCollisions(float dt)
 							impulse /= collision.contacts.size();
 							impulseOther /= collision.contacts.size();
 
-							//gameObject->GetPhysicsModel()->ApplyImpulse(impulse);
-							//other->GetPhysicsModel()->ApplyImpulse(impulseOther);
+							gameObject->GetPhysicsModel()->ApplyImpulse(impulse);
+							other->GetPhysicsModel()->ApplyImpulse(impulseOther);
 							gameObject->GetPhysicsModel()->AddRelativeForce(impulse, contact->point);
 							other->GetPhysicsModel()->AddRelativeForce(impulseOther, contact->point);
 
