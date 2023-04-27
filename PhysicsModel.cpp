@@ -104,7 +104,7 @@ void PhysicsModel::ApplyDrag()
 
 void PhysicsModel::ApplyFriction()
 {
-	if (m_inContact && m_velocity.MagnitudeSq() > 0.0f) //if we are in contact with a surface, and are moving, apply dynamic friction.
+	if (m_velocity.MagnitudeSq() > 0.0f) //if we are in contact with a surface, and are moving, apply dynamic friction.
 	{
 		//float normalForceMagnitude = abs(fmin(m_netforce.y, 0.0f));	//Get the downwards net force, and then get its normal by absoluting it. 
 		float normalForceMagnitude = fabs(fmin(m_weight.y, 0.0f));	//until collision is done, simply use the weight for now.
@@ -113,7 +113,6 @@ void PhysicsModel::ApplyFriction()
 		frictionForce *= frictionForceMagnitude;	//Apply the strength of the frictional force
 		AddForce(frictionForce);
 		DebugPrintF("Friction Force = ( %f , %f , %f )\n", frictionForce.x, frictionForce.y, frictionForce.z);
-		m_inContact = false;	//Reset the fact we are in contact now frictions been applied
 	}
 }
 

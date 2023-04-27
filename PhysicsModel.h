@@ -119,6 +119,8 @@ public:	//Public Methods
 
 #pragma endregion
 
+	/// <summary>If the object is grounded, adds the force of friction parallel and opposite to the direction of motion, according to the normal equal downward force of the object.</summary>
+	void ApplyFriction();
 
 
 protected:	//Protected Methods
@@ -149,8 +151,6 @@ protected:	//Protected Methods
 	void ApplyGravity();
 	/// <summary>Adds the force of drag and air resistance, if m_enableDrag == true;</summary>
 	void ApplyDrag();
-	/// <summary>If the object is grounded, adds the force of friction parallel and opposite to the direction of motion, according to the normal equal downward force of the object.</summary>
-	void ApplyFriction();
 
 #pragma endregion
 

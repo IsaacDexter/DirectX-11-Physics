@@ -737,7 +737,7 @@ void Application::moveBackward(int objectNumber)
 
 void Application::moveUp(int objectNumber)
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, -1.0f, 0.0f));
+	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, 2.0f, 0.0f), Vector3(0.0f, -1.0f, 0.0f));
 }
 
 void Application::moveDown(int objectNumber)
@@ -823,9 +823,6 @@ void Application::HandleCollisions(float dt)
 				Collision collision = collider->CollidesWith(*colliderOther);
 				if (collision.collided)
 				{
-					//reenable friction for both of the objects
-					gameObject->GetPhysicsModel()->SetInContact(true);
-					other->GetPhysicsModel()->SetInContact(true);
 
 					//Cache the second object's aspects that'll be used in the collision response
 					float inverseMassOther = other->GetPhysicsModel()->GetInverseMass();
@@ -854,6 +851,10 @@ void Application::HandleCollisions(float dt)
 					gameObject->GetPhysicsModel()->SetPosition(position);
 					other->GetPhysicsModel()->SetPosition(positionOther);
 
+					//reenable friction for both of the objects
+					gameObject->GetPhysicsModel()->ApplyFriction();
+					other->GetPhysicsModel()->ApplyFriction();
+
 					//For each point of contact in the collision...
 					for (Contact* contact : collision.contacts)
 					{
@@ -880,7 +881,7 @@ void Application::HandleCollisions(float dt)
 
 							if (impulse.MagnitudeSq() > 0.0f || impulseOther.MagnitudeSq() > 0.0f)
 							{
-								DebugPrintF("impulse = (%f, %f, %f), impulseOther = (%f, %f, %f)\n", impulse.x, impulse.y, impulse.z, impulseOther.x, impulseOther.y, impulseOther.z);
+								//DebugPrintF("impulse = (%f, %f, %f), impulseOther = (%f, %f, %f)\n", impulse.x, impulse.y, impulse.z, impulseOther.x, impulseOther.y, impulseOther.z);
 							}
 						}
 					}
