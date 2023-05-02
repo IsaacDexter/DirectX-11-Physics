@@ -34,7 +34,7 @@ struct Contact
 	Contact(Vector3 contactPoint, Vector3 contactNormal, float penetration)
 	{
 		this->point = contactPoint;
-		this->normal = contactPoint;
+		this->normal = contactNormal;
 		this->penetration = penetration;
 	}
 };

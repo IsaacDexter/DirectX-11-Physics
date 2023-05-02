@@ -878,11 +878,6 @@ void Application::HandleCollisions(float dt)
 							other->GetPhysicsModel()->ApplyImpulse(impulseOther);
 							gameObject->GetPhysicsModel()->AddRelativeForce(impulse, contact->point);
 							other->GetPhysicsModel()->AddRelativeForce(impulseOther, contact->point);
-
-							if (impulse.MagnitudeSq() > 0.0f || impulseOther.MagnitudeSq() > 0.0f)
-							{
-								//DebugPrintF("impulse = (%f, %f, %f), impulseOther = (%f, %f, %f)\n", impulse.x, impulse.y, impulse.z, impulseOther.x, impulseOther.y, impulseOther.z);
-							}
 						}
 					}
 				}

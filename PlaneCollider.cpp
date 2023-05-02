@@ -67,34 +67,37 @@ Collision PlaneCollider::CollidesWith(AABBCollider& other)
         //This check for each vertex is similar to the one made in the sphere plane detector: d = p dot l - t,
         //But as the the vertices have no radii, simply check if the sign of d is positive or negative. A collision has occured if p dot l < l
 
+        //otherwise, there has been a collision with this vertex
         //for each vertex 
-        for (Vector3 vertex : other.GetVertices())
+        std::array<Vector3, 8> vertices = other.GetVertices();
+        std::array<Vector3, 8>::iterator it;
+        for (it = vertices.begin(); it != vertices.end(); ++it)
         {
             //calculate the distance of this vertex from the plane
-            float distance = (vertex * m_normal);
+            float distance = ((* it) * m_normal);
             //if it's greater than the plane's distance, this vertex hasn't collided, skip it
             if (distance > m_distance)
             {
-                break;
+                continue;
             }
-            //otherwise, there has been a collision with this vertex
-            Contact contact = Contact();
             //The contact point, halfway between the vertex and the plane, can be found by:
             //plane's normal * (speraration distance)/2 + vertex's location
-            contact.point = m_normal * (distance - m_distance) + vertex;
+            Vector3 point = m_normal * (distance - m_distance) + (*it);
             //The normal is the plane's normal, always
-            contact.normal = m_normal;
+            Vector3 normal = m_normal;
             //penetration is how the plane's distance - the distance to the vertex
-            contact.penetration = m_distance - distance;
+            float penetration = m_distance - distance;
             //write this vertex
-            collision.contacts.push_back(&contact);
+            collision.contacts.push_back(new Contact(point, normal, penetration));
 
             //DebugPrintF("contact.point = (%f, %f, %f)\n", contact.point.x, contact.point.y, contact.point.z);
             //DebugPrintF("contact.normal = (%f, %f, %f)\n", contact.normal.x, contact.normal.y, contact.normal.z);
             //DebugPrintF("contact.penetration = %f\n", contact.penetration);
         }
-
     }
+    //DebugPrintF("Plane/AABB: collision.contacts.size->(%i)\n", collision.contacts.size());
+
+
     return collision;
 }
 
