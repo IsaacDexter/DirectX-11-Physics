@@ -22,8 +22,8 @@ public:
 	/// <returns>The orientation as a quaternion</returns>
 	Quaternion GetOrientation() const { return m_transform->GetOrientation(); };
 	/// <param name="position">The change in orientation</param>
-	//void Rotate(Vector3 rotation) { SetOrientation(GetOrientation() + GetOrientation() * rotation); };
-	void Rotate(Vector3 rotation) { SetOrientation(GetOrientation() * MakeQFromEulerAngles(rotation.x, rotation.y, rotation.z)); };
+	void Rotate(Vector3 rotation) { SetOrientation(GetOrientation() + GetOrientation() * rotation); };
+	//void Rotate(Vector3 rotation) { SetOrientation(GetOrientation() * MakeQFromEulerAngles(rotation.x, rotation.y, rotation.z)); };
 
 	/// <param name="inertiaTensor"><para>The inertia tensor in three dimensions is a 3 × 3 matrix that is characteristic of a rigid body</para>
 	/// <para>Each rigid body will have its own inertia tensor, just like it has its own mass</para>

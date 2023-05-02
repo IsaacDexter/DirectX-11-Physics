@@ -2,6 +2,8 @@
 #include "AABBCollider.h"
 #include "PlaneCollider.h"
 
+#include "Debug.h"
+
 
 PlaneCollider::PlaneCollider(Transform* transform, Vector3 normal, float distance) : Collider(transform)
 {
@@ -76,16 +78,20 @@ Collision PlaneCollider::CollidesWith(AABBCollider& other)
                 break;
             }
             //otherwise, there has been a collision with this vertex
-            Contact* contact = new Contact();
+            Contact contact = Contact();
             //The contact point, halfway between the vertex and the plane, can be found by:
             //plane's normal * (speraration distance)/2 + vertex's location
-            contact->point = m_normal * (distance - m_distance) + vertex;
+            contact.point = m_normal * (distance - m_distance) + vertex;
             //The normal is the plane's normal, always
-            contact->normal = m_normal;
+            contact.normal = m_normal;
             //penetration is how the plane's distance - the distance to the vertex
-            contact->penetration = m_distance - distance;
+            contact.penetration = m_distance - distance;
             //write this vertex
-            collision.contacts.push_back(contact);
+            collision.contacts.push_back(&contact);
+
+            //DebugPrintF("contact.point = (%f, %f, %f)\n", contact.point.x, contact.point.y, contact.point.z);
+            //DebugPrintF("contact.normal = (%f, %f, %f)\n", contact.normal.x, contact.normal.y, contact.normal.z);
+            //DebugPrintF("contact.penetration = %f\n", contact.penetration);
         }
 
     }
@@ -105,15 +111,15 @@ Collision PlaneCollider::CollidesWith(SphereCollider& other)
         //if theres been a collision,
         collision.collided = true;
         //Calculate contact points:
-        Contact* contact = new Contact();
+        Contact contact = Contact();
         //the plane only has one face so the normal will always be the plane's
-        contact->normal = m_normal;
+        contact.normal = m_normal;
         //The sphere has definitely intersected, so the distance from the plane will be the amount intersected, as its distance from the other side.
-        contact->penetration = -distance;
+        contact.penetration = -distance;
         //Get the point of collision along the line of the normal from the position
-        contact->point = positionOther - m_normal * (distance + radiusOther);
+        contact.point = positionOther - m_normal * (distance + radiusOther);
         //write this contact to the collision
-        collision.contacts.push_back(contact);
+        collision.contacts.push_back(&contact);
     }
     return collision;
 }

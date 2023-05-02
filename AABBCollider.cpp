@@ -103,16 +103,16 @@ Collision AABBCollider::CollidesWith(AABBCollider& other)
 		}
 
 		//write the contact
-		Contact* contact = new Contact();
-		contact->normal = normal;
-		contact->point = vertex;
-		contact->penetration = minDepth;
+		Contact contact = Contact();
+		contact.normal = normal;
+		contact.point = vertex;
+		contact.penetration = minDepth;
 
-		DebugPrintF("contact.point = (%f, %f, %f)\n", contact->point.x, contact->point.y, contact->point.z);
-		DebugPrintF("contact.normal = (%f, %f, %f)\n", contact->normal.x, contact->normal.y, contact->normal.z);
-		DebugPrintF("contact.penetration = %f\n", contact->penetration);
+		DebugPrintF("contact.point = (%f, %f, %f)\n", contact.point.x, contact.point.y, contact.point.z);
+		DebugPrintF("contact.normal = (%f, %f, %f)\n", contact.normal.x, contact.normal.y, contact.normal.z);
+		DebugPrintF("contact.penetration = %f\n", contact.penetration);
 
-		collision.contacts.push_back(contact);
+		collision.contacts.push_back(&contact);
 	}
 
 	//return
@@ -153,21 +153,21 @@ Collision AABBCollider::CollidesWith(SphereCollider& other)
 		//There has been a collision
 		collision.collided = true;
 		//determine contacts here:
-		Contact* contact = new Contact();
+		Contact contact = Contact();
 
 		//Find the closest point on this box to the centre of the sphere
 		Vector3 closestPoint = ClosestPoint(other.GetPosition());
-		contact->point = closestPoint;
+		contact.point = closestPoint;
 		//Find the line between the centre and the closest point to find the collision normal
-		contact->normal = -(GetCentre() - closestPoint).Normalized();
+		contact.normal = -(GetCentre() - closestPoint).Normalized();
 		//Fidn the penetration with the full calculation,  not just the sqrt one
-		contact->penetration = other.GetRadius() - sqrt(distanceSq);
+		contact.penetration = other.GetRadius() - sqrt(distanceSq);
 		
-		//DebugPrintF("contact.point = (%f, %f, %f)\n", contact->point.x, contact->point.y, contact->point.z);
-		//DebugPrintF("contact.normal = (%f, %f, %f)\n", contact->normal.x, contact->normal.y, contact->normal.z);
-		//DebugPrintF("contact.penetration = %f\n", contact->penetration);
+		//DebugPrintF("contact.point = (%f, %f, %f)\n", contact.point.x, contact.point.y, contact.point.z);
+		//DebugPrintF("contact.normal = (%f, %f, %f)\n", contact.normal.x, contact.normal.y, contact.normal.z);
+		//DebugPrintF("contact.penetration = %f\n", contact.penetration);
 
-		collision.contacts.push_back(contact);
+		collision.contacts.push_back(&contact);
 	}
 	return collision;
 }
@@ -184,7 +184,55 @@ Collision AABBCollider::CollidesWith(SphereCollider& other, Vector3& out)
 
 Collision AABBCollider::CollidesWith(PlaneCollider& other)
 {
-	return other.CollidesWith(*this);
+	Collision collision;
+	//Calculate the projection interval radius of the box onto a line parallel to the normal that goes through the box's centre
+	//Line L = box's centre + t * plane's normal, where the box's centre projects onto L when t = 0, and L || plane's normal.
+	//L = b.c + t * p.n
+	//Projection interval radius
+	//dot product of the box's half extents and the absolute of the plane's normal
+	float projectionIntervalRadius = GetHalfExtents() * abs(other.GetNormal());
+	//Distance between box's centre and plane
+	//dot product of box's centre and planes normal - plane's distance from origin
+	float centreDistance = (GetCentre() * other.GetNormal()) - other.GetDistance();
+	//If the distance, s, falls within the projection interval radius, r, there's been a collision
+	if (abs(centreDistance) <= projectionIntervalRadius)
+	{
+		//if theres been a collision,
+		collision.collided = true;
+		//Calculate contact points:
+		//We can find the set of contacts by simply checking each vertex of the box one ny one and generating a contact if it lies below the plane
+		//This check for each vertex is similar to the one made in the sphere plane detector: d = p dot l - t,
+		//But as the the vertices have no radii, simply check if the sign of d is positive or negative. A collision has occured if p dot l < l
+
+		//for each vertex 
+		for (Vector3 vertex : GetVertices())
+		{
+			//calculate the distance of this vertex from the plane
+			float distance = (vertex * other.GetNormal());
+			//if it's greater than the plane's distance, this vertex hasn't collided, skip it
+			if (distance > other.GetDistance())
+			{
+				break;
+			}
+			//otherwise, there has been a collision with this vertex
+			Contact contact = Contact();
+			//The contact point, halfway between the vertex and the plane, can be found by:
+			//plane's normal * (speraration distance)/2 + vertex's location
+			contact.point = other.GetNormal() * (distance - other.GetDistance()) + vertex;
+			//The normal is the plane's normal, always
+			contact.normal = other.GetNormal();
+			//penetration is how the plane's distance - the distance to the vertex
+			contact.penetration = other.GetDistance() - distance;
+			//write this vertex
+			collision.contacts.push_back(&contact);
+
+			//DebugPrintF("contact.point = (%f, %f, %f)\n", contact.point.x, contact.point.y, contact.point.z);
+			//DebugPrintF("contact.normal = (%f, %f, %f)\n", contact.normal.x, contact.normal.y, contact.normal.z);
+			//DebugPrintF("contact.penetration = %f\n", contact.penetration);
+		}
+
+	}
+	return collision;
 }
 
 std::array<Vector3, 8> AABBCollider::GetVertices() const

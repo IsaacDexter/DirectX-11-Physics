@@ -26,16 +26,16 @@ Collision SphereCollider::CollidesWith(SphereCollider& other)
 	{
 		collision.collided = true;
 		//find the contact between the two
-		Contact* contact = new Contact();
+		Contact contact = Contact();
 		//The normal will be the distance, normalized
-		contact->normal = distance.Normalized();
+		contact.normal = distance.Normalized();
 		//The point of contact will be the midpoint between the two
-		contact->point = GetPosition() + (distance * 0.5f);
+		contact.point = GetPosition() + (distance * 0.5f);
 		//The penetration is the sum of the radii - the magnitude of the collision
-		contact->penetration = radii - distance.Magnitude();
+		contact.penetration = radii - distance.Magnitude();
 
 		//write this data back
-		collision.contacts.push_back(contact);
+		collision.contacts.push_back(&contact);
 	}
 	return collision;
 }

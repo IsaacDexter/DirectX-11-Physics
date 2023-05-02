@@ -90,7 +90,12 @@ void RigidBodyModel::CalculateAngularVelocity(float dt)
 void RigidBodyModel::CalculateRotation(float dt)
 {
 	Vector3 rotation = m_angularVelocity * dt;
-	Rotate(rotation * 0.5);
+
+	Quaternion orientation = GetOrientation();
+	orientation += orientation * m_angularVelocity * 0.5f;
+	orientation /= orientation.Magnitude();	//normalise
+	SetOrientation(orientation);
+	/*Rotate(rotation * 0.5);*/
 }
 
 void RigidBodyModel::ClearTorqueAndAngularAcceleration()

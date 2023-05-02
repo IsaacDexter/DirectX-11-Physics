@@ -885,8 +885,8 @@ void Application::HandleCollisions(float dt)
 							}
 						}
 					}
-					collision.contacts.clear();
 				}
+				collision.contacts.clear();
 			}
 		}
 	}
