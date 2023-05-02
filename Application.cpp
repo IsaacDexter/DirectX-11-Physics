@@ -197,17 +197,6 @@ HRESULT Application::InitWorld()
 	gameObject->GetPhysicsModel()->SetCollider(new PlaneCollider(gameObject->GetTransform(), Vector3(0.0f, 1.0f, 0.0f), 0.0f));
 
 	m_gameObjects.push_back(gameObject);
-
-
-	transform = new Transform();
-	gameObject = new GameObject("Cube", new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
-	gameObject->GetTransform()->SetPosition(-3.0f, 1.0f, 10.0f);
-	gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
-	gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
-	gameObject->GetPhysicsModel()->EnableGravity(true);
-	gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
-
-	m_gameObjects.push_back(gameObject);
 	
 	transform = new Transform();
 	gameObject = new GameObject("Sphere", new Appearance(sphereGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
@@ -220,6 +209,26 @@ HRESULT Application::InitWorld()
 	m_gameObjects.push_back(gameObject);
 	
 	transform = new Transform();
+	gameObject = new GameObject("Sphere2", new Appearance(sphereGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
+	gameObject->GetTransform()->SetPosition(5.5f, 1.0f, 10.0f);
+	gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
+	gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
+	gameObject->GetPhysicsModel()->EnableGravity(true);
+	gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
+
+	m_gameObjects.push_back(gameObject);
+
+	transform = new Transform();
+	gameObject = new GameObject("Cube", new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
+	gameObject->GetTransform()->SetPosition(-3.0f, 1.0f, 10.0f);
+	gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
+	gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
+	gameObject->GetPhysicsModel()->EnableGravity(true);
+	gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
+
+	m_gameObjects.push_back(gameObject);
+	
+	transform = new Transform();
 	gameObject = new GameObject("Cube2", new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
 	gameObject->GetTransform()->SetPosition(-0.5f, 1.0f, 10.0f);
 	gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
@@ -228,8 +237,6 @@ HRESULT Application::InitWorld()
 	gameObject->GetPhysicsModel()->SetCollider(new AABBCollider(gameObject->GetTransform(), 1.0f, 1.0f, 1.0f));
 
 	m_gameObjects.push_back(gameObject);
-	
-
 
 
 
@@ -892,8 +899,8 @@ void Application::HandleCollisions(float dt)
 							impulse /= collision.contacts.size();
 							impulseOther /= collision.contacts.size();
 
-							gameObject->GetPhysicsModel()->ApplyImpulse(impulse);
-							other->GetPhysicsModel()->ApplyImpulse(impulseOther);
+							//gameObject->GetPhysicsModel()->ApplyImpulse(impulse);
+							//other->GetPhysicsModel()->ApplyImpulse(impulseOther);
 							gameObject->GetPhysicsModel()->AddRelativeForce(impulse, (*contact).point);
 							other->GetPhysicsModel()->AddRelativeForce(impulseOther, (*contact).point);
 						}

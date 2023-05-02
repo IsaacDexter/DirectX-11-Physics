@@ -53,7 +53,58 @@ Collision SphereCollider::CollidesWith(SphereCollider& other)
 
 Collision SphereCollider::CollidesWith(AABBCollider& other)
 {
-	return other.CollidesWith(*this);
+	Collision collision;
+
+	//Cache box's values
+	Vector3 boxCentre = other.GetCentre();
+	Vector3 boxHalfExtents = other.GetHalfExtents();
+
+	//Cache sphere attributes
+	Vector3 spherePosition = GetPosition();
+	float sphereRadius = GetRadius();
+	float sphereRadiusSq = GetRadiusSq();
+
+	//convert the centre of the sphere into the box's local space
+	Vector3 relativeCentreOther = spherePosition - boxCentre;
+
+
+	//perform an early-out seperating axis test to find an axis where the two objects are not colliding
+	if (abs(relativeCentreOther.x) - sphereRadius > boxHalfExtents.x)
+	{
+		return collision;
+	}
+	if (abs(relativeCentreOther.y) - sphereRadius > boxHalfExtents.y)
+	{
+		return collision;
+	}
+	if (abs(relativeCentreOther.z) - sphereRadius > boxHalfExtents.z)
+	{
+		return collision;
+	}
+
+	//if we haven't early outed, there may still be a collision
+
+
+	//Find the distance between this box and the centre of the sphere
+	float distanceSq = other.DistanceSq(spherePosition);
+
+	//if its less than the radius, theres been a collision
+	if (distanceSq <= sphereRadiusSq)
+	{
+		//There has been a collision
+		collision.collided = true;
+		//determine contacts here:
+
+		//Find the closest point on this box to the centre of the sphere
+		Vector3 point = other.ClosestPoint(spherePosition);
+		//Find the line between the centre and the closest point to find the collision normal
+		Vector3 normal = -(boxCentre - point).Normalized();
+		//Fidn the penetration with the full calculation,  not just the sqrt one
+		float penetration = sphereRadius - sqrt(distanceSq);
+
+		collision.contacts.push_back(Contact(point, normal, penetration));
+	}
+	return collision;
 }
 
 Collision SphereCollider::CollidesWith(PlaneCollider& other)
