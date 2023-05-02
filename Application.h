@@ -14,7 +14,7 @@
 #include "GameObject.h"
 #include "Vector3.h"
 #include "Timer.h"
-#include "Debug.h"
+
 #include "SphereCollider.h"
 #include "AABBCollider.h"
 #include "PlaneCollider.h"
@@ -87,6 +87,8 @@ private:
 
 	/// <summary>A vector containing a collection of each of the game objects within the scene.</summary>
 	vector<GameObject *> m_gameObjects;
+	/// <summary>A pointer to the game object currently under player controlled.</summary>
+	GameObject* m_controlledObject;
 
 	OrbitingCamera* m_camera = nullptr;
 
@@ -117,12 +119,14 @@ private:
 	void HandleCollisions(float dt);
 	void HandleInput();
 
-	void moveForward(int objectNumber);
-	void moveBackward(int objectNumber);
-	void moveUp(int objectNumber);
-	void moveDown(int objectNumber);
-	void moveLeft(int objectNumber);
-	void moveRight(int objectNumber);
+	void MoveForward();
+	void MoveBackward();
+	void MoveUp();
+	void MoveDown();
+	void MoveLeft();
+	void MoveRight();
+
+	void Select(unsigned int index);
 
 public:
 	Application();

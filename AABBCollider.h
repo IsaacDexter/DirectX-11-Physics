@@ -6,6 +6,8 @@ class AABBCollider :
     public Collider
 {
 public:
+#pragma region Constructors
+
     /// <summary>An Axis Aligned Bounding Box Collider encapsules an object's collision in a single non-orientable box according to the object's length, height and width in the x, y, z directions. It's an efficient, but often inaccurate form of collision.</summary>
     /// <param name="transform">The object's transform component, used to get it's position</param>
     /// <param name="halfExtents">The object's half extents, or radii in the x, y, z directions. Use half the object's length, height and width respectively</param>
@@ -31,25 +33,34 @@ public:
     /// <param name="dz">The offset from the object's centre in the z direction to use as the new centre for this bounding box. Useful for objects that aren't uniform</param>
     AABBCollider(Transform* transform, float rx, float ry, float rz, float dx, float dy, float dz);
 
-    /// <summary>For other collider types, simply call a collision check from that collider</summary>
-    /// <param name="other">A collider of unspecified type</param>
-    /// <returns>Whether or not the two colliders are overlapping</returns>
-    virtual Collision CollidesWith(Collider& other) override;
-    /// <summary>If the distance between the centres of the objects is greater than the sum of half extents in all directions, there has been a collision</summary>
-    /// <param name="other">The other object's AABB collider</param>
-    /// <returns>Whether or not the two colliders are overlapping</returns>
-    virtual Collision CollidesWith(AABBCollider& other) override;
-    /// <summary>Finds the distance (squared) between the closest edge of the bounding box and the centre of the circle. If this distance is less than the radius (squared) of the sphere, the objects have collided</summary>
-    /// <param name="other">The other object's sphere collider</param>
-    /// <returns>whether or not there was a collision</returns>
-    virtual Collision CollidesWith(SphereCollider& other) override;
-    /// <summary>Performs a closest point operation and returns it for the out vector</summary>
-    /// <param name="other">The sphere collider to check for collision with</param>
-    /// <param name="out">the closest point, to the collision, regardless of if there was a collision</param>
-    /// <returns>whether or not there was a collision</returns>
-    virtual Collision CollidesWith(SphereCollider& other, Vector3& out) ;
+#pragma endregion
 
+#pragma region CollidesWiths
+
+    /// <summary>Default abstract to be overloaded</summary>
+    virtual Collision CollidesWith(Collider& other) override;
+
+    /// <summary><para>Perform separating axes test as an early out</para>
+    /// <para>perform the full collision detection and contact resolution to get a single detected contact between the two boxes</para>
+    /// <para>combine the new contact previously detected contacts between the two boxes to form a complete set of contacts</para></summary>
+    /// <param name="other">The other box to test against</param>
+    /// <returns>Whether there was a contact, where, the normal at each of those points, and the interpenetration.</returns>
+    virtual Collision CollidesWith(AABBCollider& other) override;
+    /// <summary><para>Perform separating axes test as an early out</para>
+    /// <para>Find the squared distance between this box and the centre of the sphere, if its less than the radius squared, theres been a collision</para>
+    /// <para>Find the closest point on this box to the centre of the sphere, the line between and the penetration</para></summary>
+    /// <param name="other">The sphere to test against</param>
+    /// <returns>Whether there was a contact, where, the normal at each of those points, and the interpenetration.</returns>
+    virtual Collision CollidesWith(SphereCollider& other) override;
+    /// <summary><para>Calc. proj. interval radius of the box on to normal, checks if distance falls within this radius.</para>
+    /// <para>Calc. contacts by checking if each vertex lies below the plane.</para></summary>
+    /// <param name="other">The plane collider to test against.</param>
+    /// <returns>Whether there was a contact, where, the normal at each of those points, and the interpenetration.</returns>
     virtual Collision CollidesWith(PlaneCollider& other) override;
+
+#pragma endregion
+
+#pragma region GSetters
 
     /// <returns>The object's centre (the objects position + it's centre offset)</returns>
     Vector3 GetCentre() const { return m_centre + GetPosition(); };
@@ -75,6 +86,8 @@ public:
     Vector3 GetMin() const { return m_transform->GetPosition() - m_halfExtents; };
     /// <returns>The position + the half extents</returns>
     Vector3 GetMax() const { return m_transform->GetPosition() + m_halfExtents; };
+
+#pragma endregion
 
 #pragma region Calculations
 

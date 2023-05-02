@@ -45,18 +45,18 @@ struct Collision
 	bool collided;
 	/// <summary><para>To represent a face-face collision, rather than storing a great many points, simply store each of the four corners of collision.</para>
 	/// <para>To represent an edge collision, store the points on either side of the colliding edge.</para></summary>
-	std::vector<Contact*> contacts;
+	std::vector<Contact> contacts;
 	Collision()
 	{
 		collided = false;
-		contacts = std::vector<Contact*>();
+		contacts = std::vector<Contact>();
 	}
 	Collision(bool collision)
 	{
 		this->collided = collided;
-		contacts = std::vector<Contact*>();
+		contacts = std::vector<Contact>();
 	}
-	Collision(bool collision, std::vector<Contact*> contacts)
+	Collision(bool collision, std::vector<Contact> contacts)
 	{
 		this->collided = collided;
 		this->contacts = contacts;

@@ -79,6 +79,7 @@ Application::Application()
 	RSCullNone = nullptr;
 	 _WindowHeight = 0;
 	 _WindowWidth = 0;
+	 m_controlledObject = nullptr;
 }
 
 Application::~Application()
@@ -127,6 +128,9 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 HRESULT Application::InitWorld()
 {
+	//initialise game objects list
+	m_gameObjects = std::vector<GameObject*>();
+
 	// Setup Camera
 	XMFLOAT3 eye = XMFLOAT3(0.0f, 2.0f, -1.0f);
 	XMFLOAT3 at = XMFLOAT3(0.0f, 2.0f, 0.0f);
@@ -205,15 +209,15 @@ HRESULT Application::InitWorld()
 
 	m_gameObjects.push_back(gameObject);
 	
-	//transform = new Transform();
-	//gameObject = new GameObject("Sphere", new Appearance(sphereGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
-	//gameObject->GetTransform()->SetPosition(-0.5f, 1.0f, 10.0f);
-	//gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
-	//gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
-	//gameObject->GetPhysicsModel()->EnableGravity(true);
-	//gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
+	transform = new Transform();
+	gameObject = new GameObject("Sphere", new Appearance(sphereGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
+	gameObject->GetTransform()->SetPosition(2.0f, 1.0f, 10.0f);
+	gameObject->GetTransform()->SetScale(1.0f, 1.0f, 1.0f);
+	gameObject->GetAppearance()->SetTextureRV(m_stoneTextureRV);
+	gameObject->GetPhysicsModel()->EnableGravity(true);
+	gameObject->GetPhysicsModel()->SetCollider(new SphereCollider(gameObject->GetTransform(), 1.0f));
 
-	//m_gameObjects.push_back(gameObject);
+	m_gameObjects.push_back(gameObject);
 	
 	transform = new Transform();
 	gameObject = new GameObject("Cube2", new Appearance(cubeGeometry, shinyMaterial), transform, new RigidBodyModel(transform, 1.0f, 0.0f));
@@ -725,34 +729,46 @@ void Application::Cleanup()
 
 #pragma region MovingCubes
 
-void Application::moveForward(int objectNumber)
+void Application::MoveForward()
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, 0.0f, -1.0f), Vector3(1.0f, 0.0f, 1.0f));
+	m_controlledObject->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, 0.0f, -1.0f), Vector3(0.0f, 0.0f, 1.0f));
 }
 
-void Application::moveBackward(int objectNumber)
+void Application::MoveBackward()
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 0.0f, -1.0f));
+	m_controlledObject->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 0.0f, -1.0f));
 }
 
-void Application::moveUp(int objectNumber)
+void Application::MoveUp()
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, 2.0f, 0.0f), Vector3(0.0f, -1.0f, 0.0f));
+	m_controlledObject->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, 2.0f, 0.0f), Vector3(0.0f, -1.0f, 0.0f));
 }
 
-void Application::moveDown(int objectNumber)
+void Application::MoveDown()
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, -1.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f));
+	m_controlledObject->GetPhysicsModel()->AddRelativeForceLocal(Vector3(0.0f, -1.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f));
 }
 
-void Application::moveLeft(int objectNumber)
+void Application::MoveLeft()
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(1.0f, 0.0f, 0.0f), Vector3(-1.0f, 0.0f, 0.0f));
+	m_controlledObject->GetPhysicsModel()->AddRelativeForceLocal(Vector3(1.0f, 0.0f, 0.0f), Vector3(-1.0f, 0.0f, 0.0f));
 }
 
-void Application::moveRight(int objectNumber)
+void Application::MoveRight()
 {
-	m_gameObjects[objectNumber]->GetPhysicsModel()->AddRelativeForceLocal(Vector3(-1.0f, 0.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f));
+	m_controlledObject->GetPhysicsModel()->AddRelativeForceLocal(Vector3(-1.0f, 0.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f));
+}
+
+void Application::Select(unsigned int index)
+{
+	if (index < m_gameObjects.size())
+	{
+		GameObject* object = m_gameObjects.at(index);
+		if (object != nullptr)
+		{
+			m_controlledObject = object;
+		}
+	}
 }
 
 #pragma endregion
@@ -768,7 +784,6 @@ void Application::Update()
 		HandleInput();
 		UpdateWorld(FPS60);
 		HandleCollisions(FPS60);
-		//DebugPrintF("Accumulator: %f\n", accumulator);
 		m_timer->Tick();
 		accumulator -= FPS60;
 	}
@@ -837,12 +852,15 @@ void Application::HandleCollisions(float dt)
 					//find the deepest interpenetration of the contacts
 					float maxDepth = 0.0f;
 					Vector3 normal = Vector3();
-					for (Contact* contact : collision.contacts)
+
+					//For each point of contact in the collision...
+					std::vector<Contact>::iterator contact;
+					for (contact = collision.contacts.begin(); contact != collision.contacts.end(); ++contact)
 					{
-						if (contact->penetration > maxDepth)
+						if ((*contact).penetration > maxDepth)
 						{
-							maxDepth = contact->penetration;
-							normal = contact->normal;
+							maxDepth = (*contact).penetration;
+							normal = (*contact).normal;
 						}
 					}
 					//set the positions of the two objects according to their mass so they are not longer interpenetrating
@@ -855,29 +873,29 @@ void Application::HandleCollisions(float dt)
 					gameObject->GetPhysicsModel()->ApplyFriction();
 					other->GetPhysicsModel()->ApplyFriction();
 
-					//For each point of contact in the collision...
-					for (Contact* contact : collision.contacts)
+					
+					for (contact = collision.contacts.begin(); contact != collision.contacts.end(); ++contact)
 					{
 						//Check the objects are approaching eachother by dotting the relative velocity onto the normal
-						if (contact->normal * relativeVelocity <= 0.0f)
+						if ((*contact).normal* relativeVelocity <= 0.0f)
 						{
 							//total velocity = -(1 + restitution) * Dot(relative velocity, collision normal)
-							float totalVelocity = contact->normal * relativeVelocity;
+							float totalVelocity = (*contact).normal * relativeVelocity;
 							//momentum = total velocity * (inverse mass + inverse mass)
 							float momentum = totalVelocity * (inverseMass + inverseMassOther);
 
 							//impulse = momentum/mass in direction normal to collision
-							Vector3 impulse = inverseMass * momentum * restitution * contact->normal;
+							Vector3 impulse = inverseMass * momentum * restitution * (*contact).normal;
 							//impulse = momentum/mass in direction opposite of normal to collision
-							Vector3 impulseOther = -(inverseMassOther * momentum * restitutionOther * contact->normal);
+							Vector3 impulseOther = -(inverseMassOther * momentum * restitutionOther * (*contact).normal);
 							//split the impulse evenly across the collision surface by dividing by the number of collision points
 							impulse /= collision.contacts.size();
 							impulseOther /= collision.contacts.size();
 
 							gameObject->GetPhysicsModel()->ApplyImpulse(impulse);
 							other->GetPhysicsModel()->ApplyImpulse(impulseOther);
-							gameObject->GetPhysicsModel()->AddRelativeForce(impulse, contact->point);
-							other->GetPhysicsModel()->AddRelativeForce(impulseOther, contact->point);
+							gameObject->GetPhysicsModel()->AddRelativeForce(impulse, (*contact).point);
+							other->GetPhysicsModel()->AddRelativeForce(impulseOther, (*contact).point);
 						}
 					}
 				}
@@ -889,54 +907,76 @@ void Application::HandleCollisions(float dt)
 
 void Application::HandleInput()
 {
-	// Move gameobject
-	if (GetAsyncKeyState('1'))
+	//Movement
+	if (m_controlledObject != nullptr)
 	{
-		moveForward(1);
+		if (GetAsyncKeyState(0x41))
+		{
+			MoveLeft();
+		}
+		if (GetAsyncKeyState(0x44))
+		{
+			MoveRight();
+		}
+		if (GetAsyncKeyState(0x57))
+		{
+			MoveForward();
+		}
+		if (GetAsyncKeyState(0x53))
+		{
+			MoveBackward();
+		}
+		if (GetAsyncKeyState(0x51))
+		{
+			MoveDown();
+		}
+		if (GetAsyncKeyState(0x45))
+		{
+			MoveUp();
+		}
+
 	}
-	if (GetAsyncKeyState('2'))
+
+	//Selection
+	if (GetAsyncKeyState(0x30))
 	{
-		moveForward(2);
+		Select(1);
 	}
-	if (GetAsyncKeyState('3'))
+	if (GetAsyncKeyState(0x31))
 	{
-		moveBackward(1);
+		Select(2);
 	}
-	if (GetAsyncKeyState('4'))
+	if (GetAsyncKeyState(0x32))
 	{
-		moveBackward(2);
+		Select(3);
 	}
-	if (GetAsyncKeyState('5'))
+	if (GetAsyncKeyState(0x33))
 	{
-		moveUp(1);
+		Select(4);
 	}
-	if (GetAsyncKeyState('6'))
+	if (GetAsyncKeyState(0x34))
 	{
-		moveUp(2);
+		Select(5);
 	}
-	if (GetAsyncKeyState('7'))
+	if (GetAsyncKeyState(0x35))
 	{
-		moveDown(1);
+		Select(6);
 	}
-	if (GetAsyncKeyState('8'))
+	if (GetAsyncKeyState(0x36))
 	{
-		moveDown(2);
+		Select(7);
 	}
-	if (GetAsyncKeyState('9'))
+	if (GetAsyncKeyState(0x37))
 	{
-		moveLeft(1);
+		Select(8);
 	}
-	if (GetAsyncKeyState('0'))
+	if (GetAsyncKeyState(0x38))
 	{
-		moveLeft(2);
+		Select(9);
 	}
-	if (GetAsyncKeyState('O'))
+	if (GetAsyncKeyState(0x39))
 	{
-		moveRight(1);
-	}
-	if (GetAsyncKeyState('P'))
-	{
-		moveRight(2);
+		Select(0);
 	}
 }
 
