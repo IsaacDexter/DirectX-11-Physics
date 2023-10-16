@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="ConstantAccelerationModel">
+    <Position X="17" Y="14" Width="5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ConstantAccelerationModel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ConstantVelocityModel">
+    <Position X="22.75" Y="14" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>ConstantVelocityModel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ParticleModel">
+    <Position X="1.75" Y="14" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAQEAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>ParticleModel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PhysicsModel">
+    <Position X="12.5" Y="0.5" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>ECZlAAEsArWoECwBgAAAAAAVAEAAFszAAGEgQAUAACk=</HashCode>
+      <FileName>PhysicsModel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RigidBodyModel">
+    <Position X="6.75" Y="14" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>QAQEgAAAAECAQACjEAAIAAAAUAAZAAkAAAAAAAACMAA=</HashCode>
+      <FileName>RigidBodyModel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StaticModel">
+    <Position X="12" Y="14" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAACAAAA=</HashCode>
+      <FileName>StaticModel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AABBCollider">
+    <Position X="22.75" Y="19.75" Width="5.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAEAAAQEABABABACRAAQAAAAIABAQAAEABAYAAA=</HashCode>
+      <FileName>AABBCollider.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Collider">
+    <Position X="19.25" Y="16.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIACAAAAAAAAAABAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Collider.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlaneCollider">
+    <Position X="17.5" Y="19.75" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAABAAAAAAAAAAAAABSAAAAIIAAAEAAAAAEAAAAA=</HashCode>
+      <FileName>PlaneCollider.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SphereCollider">
+    <Position X="13.25" Y="19.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAABAAAABAAAAAAIAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>SphereCollider.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Appearance">
+    <Position X="17.25" Y="0.5" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAJEAAGgIAAAAAAAAAAAAAAgAQAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Appearance.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Application">
+    <Position X="30" Y="0.75" Width="7.75" />
+    <TypeIdentifier>
+      <HashCode>AC2AQCLIGBKIA5gAMBGEADABAAECAIMcwEBAQMJAQQY=</HashCode>
+      <FileName>Application.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Camera">
+    <Position X="40" Y="0.75" Width="8.5" />
+    <TypeIdentifier>
+      <HashCode>IAQKAQAAACAAQAgAQAAAIAIIgAAAAgQAACABAIIAQQA=</HashCode>
+      <FileName>Camera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameObject">
+    <Position X="22.5" Y="4.25" Width="6.5" />
+    <TypeIdentifier>
+      <HashCode>ABQAIAAIAQAAAgAAAABAIAAAAAAAAAFACAAAAAIAAAA=</HashCode>
+      <FileName>GameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OrbitingCamera">
+    <Position X="39.75" Y="7" Width="9" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAIQAAAIAAAAEAAABBAAAAEAQgSEAAAAABiAEIA=</HashCode>
+      <FileName>OrbitingCamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Timer">
+    <Position X="27" Y="8.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAEQAA=</HashCode>
+      <FileName>Timer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Transform">
+    <Position X="17.5" Y="4.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAECCCCCAAAAAAAAQAAAIQMgsAIGAAAgAAAIA=</HashCode>
+      <FileName>Transform.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Contact">
+    <Position X="28.5" Y="16.5" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAACAAAAAgAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Contact.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Collision">
+    <Position X="23.75" Y="16.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Contact.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
